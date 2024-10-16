@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import FirebaseAuth
 
 struct MainView: View {
     
@@ -17,6 +18,16 @@ struct MainView: View {
             isFirstLaunch = true
         }){
             Text("RESET")
+        }
+        
+        Button {
+            do {
+                try Auth.auth().signOut()
+            } catch {
+                print("Error signing out: \(error.localizedDescription)")
+            }
+        } label: {
+            Text("Log Out")
         }
     }
 }

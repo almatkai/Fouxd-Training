@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F97341F2CC035020030F33A /* FirebaseAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 3F97341E2CC035020030F33A /* FirebaseAuth */; };
+		3F9734212CC035020030F33A /* FirebaseCore in Frameworks */ = {isa = PBXBuildFile; productRef = 3F9734202CC035020030F33A /* FirebaseCore */; };
+		3F9734232CC035020030F33A /* FirebaseDatabase in Frameworks */ = {isa = PBXBuildFile; productRef = 3F9734222CC035020030F33A /* FirebaseDatabase */; };
+		3F9734252CC035020030F33A /* FirebaseFirestore in Frameworks */ = {isa = PBXBuildFile; productRef = 3F9734242CC035020030F33A /* FirebaseFirestore */; };
+		3F9734272CC035020030F33A /* FirebaseStorage in Frameworks */ = {isa = PBXBuildFile; productRef = 3F9734262CC035020030F33A /* FirebaseStorage */; };
 		3F9D5CD62CBEB223007C5343 /* SVGKit in Frameworks */ = {isa = PBXBuildFile; productRef = 3F9D5CD52CBEB223007C5343 /* SVGKit */; };
 		3F9D5CDD2CBEBA0D007C5343 /* GoogleSignIn in Frameworks */ = {isa = PBXBuildFile; productRef = 3F9D5CDC2CBEBA0D007C5343 /* GoogleSignIn */; };
 		3F9D5CDF2CBEBA0D007C5343 /* GoogleSignInSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3F9D5CDE2CBEBA0D007C5343 /* GoogleSignInSwift */; };
@@ -29,9 +34,14 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3F9734232CC035020030F33A /* FirebaseDatabase in Frameworks */,
 				3F9D5CD62CBEB223007C5343 /* SVGKit in Frameworks */,
+				3F9734212CC035020030F33A /* FirebaseCore in Frameworks */,
 				3F9D5CDD2CBEBA0D007C5343 /* GoogleSignIn in Frameworks */,
 				3F9D5CDF2CBEBA0D007C5343 /* GoogleSignInSwift in Frameworks */,
+				3F9734272CC035020030F33A /* FirebaseStorage in Frameworks */,
+				3F97341F2CC035020030F33A /* FirebaseAuth in Frameworks */,
+				3F9734252CC035020030F33A /* FirebaseFirestore in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +87,11 @@
 				3F9D5CD52CBEB223007C5343 /* SVGKit */,
 				3F9D5CDC2CBEBA0D007C5343 /* GoogleSignIn */,
 				3F9D5CDE2CBEBA0D007C5343 /* GoogleSignInSwift */,
+				3F97341E2CC035020030F33A /* FirebaseAuth */,
+				3F9734202CC035020030F33A /* FirebaseCore */,
+				3F9734222CC035020030F33A /* FirebaseDatabase */,
+				3F9734242CC035020030F33A /* FirebaseFirestore */,
+				3F9734262CC035020030F33A /* FirebaseStorage */,
 			);
 			productName = "Fouxd Training";
 			productReference = 3FF232402CBE1B24003EB251 /* Fouxd Training.app */;
@@ -109,6 +124,7 @@
 			packageReferences = (
 				3F9D5CD42CBEB223007C5343 /* XCRemoteSwiftPackageReference "SVGKit" */,
 				3F9D5CDB2CBEBA0D007C5343 /* XCRemoteSwiftPackageReference "GoogleSignIn-iOS" */,
+				3F97341D2CC035020030F33A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 3FF232412CBE1B24003EB251 /* Products */;
@@ -271,6 +287,7 @@
 				DEVELOPMENT_TEAM = UBRTH86SZ3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Fouxd-Training-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -301,6 +318,7 @@
 				DEVELOPMENT_TEAM = UBRTH86SZ3;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Fouxd-Training-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -344,6 +362,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		3F97341D2CC035020030F33A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 11.3.0;
+			};
+		};
 		3F9D5CD42CBEB223007C5343 /* XCRemoteSwiftPackageReference "SVGKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/SVGKit/SVGKit";
@@ -363,6 +389,31 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		3F97341E2CC035020030F33A /* FirebaseAuth */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F97341D2CC035020030F33A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAuth;
+		};
+		3F9734202CC035020030F33A /* FirebaseCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F97341D2CC035020030F33A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCore;
+		};
+		3F9734222CC035020030F33A /* FirebaseDatabase */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F97341D2CC035020030F33A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseDatabase;
+		};
+		3F9734242CC035020030F33A /* FirebaseFirestore */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F97341D2CC035020030F33A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseFirestore;
+		};
+		3F9734262CC035020030F33A /* FirebaseStorage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3F97341D2CC035020030F33A /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseStorage;
+		};
 		3F9D5CD52CBEB223007C5343 /* SVGKit */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 3F9D5CD42CBEB223007C5343 /* XCRemoteSwiftPackageReference "SVGKit" */;

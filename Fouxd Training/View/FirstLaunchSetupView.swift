@@ -29,6 +29,7 @@ struct FirstLaunchSetupView: View {
     struct FirstView: View {
         
         @EnvironmentObject private var globalVM: GlobalVM
+        @StateObject private var authViewModel = AuthenticationViewModel()
         @Binding var pageCounter: Int
         var body: some View {
             ZStack {
@@ -57,15 +58,52 @@ struct FirstLaunchSetupView: View {
                 VStack {
                     Spacer()
                     Button(action: {
-                        print("Sign in")
+                        Task {
+                            if globalVM.userSession == nil {
+                                await authViewModel.signInWithGoogle { _ in
+                                    pageCounter += 1
+                                }
+                            } else {
+                                authViewModel.logOut()
+                            }
+                            globalVM.refreshUser()
+                        }
                     }) {
                         HStack {
                             HStack {
-                                Image("google")
-                                    .resizable()
-                                    .scaledToFit()
-                                    .frame(width: 30)
-                                Text("Sign in with Google")
+                                if let userSession = globalVM.userSession {
+                                    if let url = userSession.photoURL {
+                                        AsyncImage(url: url) { image in
+                                            image
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 30)
+                                                .clipShape(Circle())
+                                        } placeholder: {
+                                            ProgressView() // Show a loading indicator while the image is loading
+                                        }
+                                    } else {
+                                        // Fallback image if no valid photoURL is available
+                                        Image("fallbackImageName") // Replace with a valid fallback image name
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 30)
+                                    }
+                                    
+                                    VStack {
+                                        Text(userSession.displayName ?? "")
+                                        Text(userSession.email ?? "")
+                                            .font(.caption)
+                                    }
+                                    
+                                    Text("Tap to log out")
+                                } else {
+                                    Image("google")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 30)
+                                    Text("Sign in with Google")
+                                }
                             }
                             .padding()
                         }

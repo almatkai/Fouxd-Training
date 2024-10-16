@@ -9,7 +9,7 @@ import SwiftUI
 import SVGKit
 
 struct ContentView: View {
-    // Define a property to check if the first launch setup is complete
+
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
     
     var body: some View {
@@ -17,12 +17,7 @@ struct ContentView: View {
             if isFirstLaunch {
                 FirstLaunchSetupView()
                     .ignoresSafeArea()
-                    .onAppear {
-                        print("First launch setup")
-                    }
-                    .onDisappear {
-                        isFirstLaunch = false
-                    }
+                    .transition(.move(edge: .leading))
             } else {
                 MainView()
             }
