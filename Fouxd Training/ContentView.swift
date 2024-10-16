@@ -9,28 +9,23 @@ import SwiftUI
 import SVGKit
 
 struct ContentView: View {
-    
-    @State private var firstSetup: Bool = UserDefaults.standard.bool(forKey: "firstSetup") == false
+    // Define a property to check if the first launch setup is complete
+    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
     
     var body: some View {
         VStack {
-            FirstLaunchSetupView()
-                .ignoresSafeArea()
-//            if firstSetup {
-                
-//                VStack {
-//                    Image(systemName: "globe")
-//                        .imageScale(.large)
-//                        .foregroundStyle(.tint)
-//                    Text("Hello, world!")
-//                }
-//                .padding()
-//                .onAppear {
-//                    UserDefaults.standard.set(true, forKey: "isFirstLaunch")
-//                }
-//            } else {
-//                EmptyView()
-//            }
+            if isFirstLaunch {
+                FirstLaunchSetupView()
+                    .ignoresSafeArea()
+                    .onAppear {
+                        print("First launch setup")
+                    }
+                    .onDisappear {
+                        isFirstLaunch = false
+                    }
+            } else {
+                MainView()
+            }
         }
     }
 }
