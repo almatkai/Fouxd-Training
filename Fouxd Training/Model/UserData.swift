@@ -63,6 +63,7 @@ enum Gender: Codable {
 
 enum ActivityLevel: Codable {
     case sedentary, light, moderate, active
+    
     var rawValue: String {
         switch self {
         case .sedentary:
@@ -73,6 +74,19 @@ enum ActivityLevel: Codable {
             return "Moderate"
         case .active:
             return "Active"
+        }
+    }
+    
+    var duration: SessionType {
+        switch self {
+        case .sedentary:
+            return .repsAndSets(reps: 120, sets: 3, rest: 30)
+        case .light:
+            return .repsAndSets(reps: 90, sets: 4, rest: 30)
+        case .moderate:
+            return .repsAndSets(reps: 60, sets: 3, rest: 30)
+        case .active:
+            return .repsAndSets(reps: 30, sets: 3, rest: 30)
         }
     }
 }
