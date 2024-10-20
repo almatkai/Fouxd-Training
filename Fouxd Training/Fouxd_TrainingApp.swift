@@ -19,12 +19,15 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct Fouxd_TrainingApp: App {
-    @StateObject private var globalVars = GlobalVM()
+    @StateObject private var globalVM = GlobalVM()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(globalVars)
+                .environmentObject(globalVM)
+                .onAppear {
+                    globalVM.refreshUser()
+                }
         }
     }
 }

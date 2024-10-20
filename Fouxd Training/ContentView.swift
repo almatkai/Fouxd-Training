@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
-import SVGKit
 
 struct ContentView: View {
 
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
+    @EnvironmentObject private var globalVM: GlobalVM
     
     var body: some View {
         VStack {
@@ -20,6 +20,20 @@ struct ContentView: View {
                     .transition(.move(edge: .leading))
             } else {
                 MainView()
+                    .onAppear {
+                        if let user = globalVM.userSession {
+                            DBUserDataService.shared.fetchUserData(uid: user.uid, completion: { res in
+                                if case .success(let userData) = res {
+                                    globalVM.userData = userData
+                                }
+                                
+                            })
+                        } else {
+                            guard let userData = LocalUserDataService.shared.fetchUserDataLocally() else { return }
+                            globalVM.userData = userData
+                        }
+                        HealthKitService.shared.setup()
+                    }
             }
         }
     }

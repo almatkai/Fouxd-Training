@@ -8,7 +8,7 @@
 import Foundation
 
 struct Plan {
-    var daysPerWeek: Int
+    var weekDay: WeekDay
     var sessionDuration: Int // in minutes
     var focus: String
     var cardio: CardioPlan

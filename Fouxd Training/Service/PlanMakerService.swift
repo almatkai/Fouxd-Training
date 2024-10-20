@@ -13,13 +13,18 @@ class PlanMakerService {
     
     private init() {}
     
-    public func determinePlanType(for user: UserModel) -> Plan {
-        // Calculate BMI
+    public func determinePlanType(for user: UserData) -> [Plan] {
         let bmi = calculateBMI(weight: user.weight, height: user.height)
-        let freeTimeCategory = categorizeFreeTime(days: user.freeDays, hoursPerDay: user.freeHour)
+        var plans: [Plan] = []
         
-        // Determine plan based on BMI, free time category, and fitness goal
-        return createPlan(bmiCategory: bmi.category, freeTimeCategory: freeTimeCategory, goal: user.goal)
+        for day in user.availibility {
+            let freeTimeCategory = categorizeFreeTime(hoursPerDay: day.freeTime)
+            var plan = createPlan(bmiCategory: bmi.category, freeTimeCategory: freeTimeCategory, goal: user.goal, day: day.weekDay)
+            plan.weekDay = day.weekDay
+            plans.append(plan)
+        }
+        
+        return plans
     }
 }
 
@@ -48,56 +53,50 @@ private extension PlanMakerService{
         return BMI(value: bmiValue, category: category)
     }
     
-    private func categorizeFreeTime(days: Int, hoursPerDay: Double) -> FreeTimeCategory {
-        switch (days, hoursPerDay) {
-        case (5..., let h) where h >= 1:
+    private func categorizeFreeTime(hoursPerDay: Double) -> FreeTimeCategory {
+        switch hoursPerDay {
+        case 3...:
             return .highAvailability
-        case (4...5, let h) where h >= 1:
+        case 2..<3:
             return .moderateHighAvailability
-        case (4...5, 0.5...1):
+        case 1..<2:
             return .moderateLowAvailability
-        case (3...4, let h) where h >= 1:
+        case 0.5..<1:
             return .lowHighAvailability
-        case (3...4, 0.5...1):
+        case 0.25..<0.5:
             return .lowLowAvailability
-        case (2...3, let h) where h >= 1:
-            return .veryLowHighAvailability
-        case (2...3, 0.5...1):
-            return .veryLowLowAvailability
-        case (1...2, let h) where h >= 1:
-            return .minimalHighAvailability
-        case (1...2, 0.5...1):
-            return .minimalLowAvailability
-        default:
+        case 0..<0.25:
             return .veryMinimal
+        default:
+            return .veryMinimal 
         }
     }
     
-    private func createPlan(bmiCategory: BMICategory, freeTimeCategory: FreeTimeCategory, goal: FitnessGoal) -> Plan {
+    private func createPlan(bmiCategory: BMICategory, freeTimeCategory: FreeTimeCategory, goal: FitnessGoal, day: WeekDay) -> Plan {
         // Customize the Plan based on the three factors
         switch (bmiCategory, freeTimeCategory, goal) {
         case (.underweight, .highAvailability, .muscleGain):
-            return createMuscleGainPlan(highIntensity: true)
+            return createMuscleGainPlan(highIntensity: true, day: day)
         case (.underweight, _, .muscleGain):
-            return createMuscleGainPlan(highIntensity: false)
+            return createMuscleGainPlan(highIntensity: false, day: day)
             
         case (.normal, .highAvailability, .endurance):
-            return createEndurancePlan(highIntensity: true)
+            return createEndurancePlan(highIntensity: true, day: day)
         case (.normal, _, .endurance):
-            return createEndurancePlan(highIntensity: false)
+            return createEndurancePlan(highIntensity: false, day: day)
             
         case (.overweight, .highAvailability, .weightLoss), (.obese, .highAvailability, .weightLoss):
-            return createWeightLossPlan(highIntensity: true)
+            return createWeightLossPlan(highIntensity: true, day: day)
         case (.overweight, _, .weightLoss), (.obese, _, .weightLoss):
-            return createWeightLossPlan(highIntensity: false)
+            return createWeightLossPlan(highIntensity: false, day: day)
             
         default:
-            return createGeneralFitnessPlan() // Default fallback plan
+            return createGeneralFitnessPlan(day: day) // Default fallback plan
         }
     }
     
-    // Helper functions for creating specific plans
-    private func createMuscleGainPlan(highIntensity: Bool) -> Plan {
+    // MARK: - Helper functions for creating specific plans
+    private func createMuscleGainPlan(highIntensity: Bool, day: WeekDay) -> Plan {
         let cardio = CardioPlan(
             intensity: highIntensity ? .medium : .low,
             duration: highIntensity ? 15 : 10,
@@ -111,7 +110,7 @@ private extension PlanMakerService{
         )
         
         return Plan(
-            daysPerWeek: highIntensity ? 5 : 4,
+            weekDay: day,
             sessionDuration: highIntensity ? 60 : 45,
             focus: "Muscle Gain",
             cardio: cardio,
@@ -120,7 +119,7 @@ private extension PlanMakerService{
         )
     }
     
-    private func createEndurancePlan(highIntensity: Bool) -> Plan {
+    private func createEndurancePlan(highIntensity: Bool, day: WeekDay) -> Plan {
         let cardio = CardioPlan(
             intensity: highIntensity ? .high : .medium,
             duration: highIntensity ? 45 : 30,
@@ -134,7 +133,7 @@ private extension PlanMakerService{
         )
         
         return Plan(
-            daysPerWeek: highIntensity ? 6 : 5,
+            weekDay: day,
             sessionDuration: highIntensity ? 60 : 45,
             focus: "Endurance",
             cardio: cardio,
@@ -143,7 +142,7 @@ private extension PlanMakerService{
         )
     }
     
-    private func createWeightLossPlan(highIntensity: Bool) -> Plan {
+    private func createWeightLossPlan(highIntensity: Bool, day: WeekDay) -> Plan {
         let cardio = CardioPlan(
             intensity: highIntensity ? .high : .medium,
             duration: highIntensity ? 30 : 20,
@@ -157,7 +156,7 @@ private extension PlanMakerService{
         )
         
         return Plan(
-            daysPerWeek: highIntensity ? 5 : 3,
+            weekDay: day,
             sessionDuration: highIntensity ? 45 : 30,
             focus: "Weight Loss",
             cardio: cardio,
@@ -166,7 +165,7 @@ private extension PlanMakerService{
         )
     }
     
-    private func createGeneralFitnessPlan() -> Plan {
+    private func createGeneralFitnessPlan(day: WeekDay) -> Plan {
         let cardio = CardioPlan(
             intensity: .medium,
             duration: 25,
@@ -180,7 +179,7 @@ private extension PlanMakerService{
         )
         
         return Plan(
-            daysPerWeek: 3,
+            weekDay: day,
             sessionDuration: 40,
             focus: "General Fitness",
             cardio: cardio,

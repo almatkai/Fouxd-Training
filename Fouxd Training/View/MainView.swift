@@ -10,28 +10,22 @@ import FirebaseAuth
 
 struct MainView: View {
     
-    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = false
-    
     var body: some View {
-        Text("HELLO WORLD!")
-        Button(action: {
-            isFirstLaunch = true
-        }){
-            Text("RESET")
-        }
-        
-        Button {
-            do {
-                try Auth.auth().signOut()
-            } catch {
-                print("Error signing out: \(error.localizedDescription)")
-            }
-        } label: {
-            Text("Log Out")
+
+        TabView {
+            DashboardView()
+                .tabItem {
+                    Label("Dashboard", systemImage: "chart.bar.fill")
+                }
+            WorkoutView()
+                .tabItem {
+                    Label("Workout", systemImage: "figure.run")
+                }
+            ProfileView()
+                .tabItem {
+                    Label("Profile", systemImage: "person")
+                }
         }
     }
 }
 
-#Preview {
-    MainView()
-}
