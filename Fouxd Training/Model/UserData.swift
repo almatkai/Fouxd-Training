@@ -16,11 +16,10 @@ struct UserData: Codable {
     var gender: Gender = .male
     var availibility: [Availability] = [.init(weekDay: .monday, freeTime: 0.0), .init(weekDay: .tuesday, freeTime: 0.0), .init(weekDay: .wednesday, freeTime: 0.0), .init(weekDay: .thursday, freeTime: 0.0), .init(weekDay: .friday, freeTime: 0.0), .init(weekDay: .saturday, freeTime: 0.0), .init(weekDay: .sunday, freeTime: 0.0)]
     var activityLevel: ActivityLevel = .moderate
-    var goal: FitnessGoal = .endurance
     var lastUpdated: Date = Date()
     
     enum CodingKeys: String, CodingKey {
-        case id, weight, height, age, gender, activityLevel, goal, availibility
+        case id, weight, height, age, gender, activityLevel, availibility
     }
 }
 
@@ -89,8 +88,14 @@ enum ActivityLevel: Codable {
             return .repsAndSets(reps: 30, sets: 3, rest: 30)
         }
     }
-}
-
-enum FitnessGoal: Codable {
-    case weightLoss, muscleGain, endurance
+    
+    func adjustedDuration(for gender: Gender) -> SessionType {
+        let baseDuration = self.duration
+        switch gender {
+        case .male, .other:
+            return .repsAndSets(reps: baseDuration.reps, sets: baseDuration.sets, rest: baseDuration.rest)
+        case .female:
+            return .repsAndSets(reps: baseDuration.reps > 60 ? baseDuration.reps - 10 : baseDuration.reps - 20, sets: baseDuration.sets, rest: baseDuration.rest)
+        }
+    }
 }

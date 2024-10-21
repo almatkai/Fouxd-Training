@@ -13,8 +13,9 @@ class GlobalVM: ObservableObject {
     @Published var screenHeight: CGFloat
     @Published var userSession: User?
     @Published var userData: UserData = UserData()
+    @Published var plans: [Plan] = []
     
-    private init() {
+    init() {
         self.screenWidth = UIScreen.main.bounds.width
         self.screenHeight = UIScreen.main.bounds.height
     }
@@ -25,9 +26,9 @@ class GlobalVM: ObservableObject {
     
     func saveUserData() {
         if let user = userSession {
-            DBUserDataService.shared.createUserData(uid: user.uid, data: userData)
+            FBMUserData.shared.createUserData(uid: user.uid, data: userData)
         } else {
-            LocalUserDataService.shared.saveUserDataLocally(data: userData)
+            UDUserData.shared.saveUserDataLocally(data: userData)
         }
     }
 }

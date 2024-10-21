@@ -22,14 +22,14 @@ struct ContentView: View {
                 MainView()
                     .onAppear {
                         if let user = globalVM.userSession {
-                            DBUserDataService.shared.fetchUserData(uid: user.uid, completion: { res in
+                            FBMUserData.shared.fetchUserData(uid: user.uid, completion: { res in
                                 if case .success(let userData) = res {
                                     globalVM.userData = userData
                                 }
                                 
                             })
                         } else {
-                            guard let userData = LocalUserDataService.shared.fetchUserDataLocally() else { return }
+                            guard let userData = UDUserData.shared.fetchUserDataLocally() else { return }
                             globalVM.userData = userData
                         }
                         HealthKitService.shared.setup()

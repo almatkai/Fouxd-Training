@@ -7,9 +7,9 @@
 
 import Foundation
 
-class LocalUserDataService {
+class UDUserData {
     
-    static let shared = LocalUserDataService()
+    static let shared = UDUserData()
     
     // MARK: - UserDefaults Implementation
     private let defaults = UserDefaults.standard
@@ -76,10 +76,6 @@ class LocalUserDataService {
         case "activityLevel":
             if let newValue = value as? ActivityLevel {
                 userData.activityLevel = newValue
-            }
-        case "goal":
-            if let newValue = value as? FitnessGoal {
-                userData.goal = newValue
             }
         default:
             print("Invalid field name: \(field)")

@@ -29,8 +29,8 @@ struct ProfileView: View {
                     
                     // Action Buttons
                     HStack(spacing: 20) {
-                        NavigationLink(destination: Text("Metrics")) {
-                            Label("Metrics", systemImage: "heart.fill")
+                        NavigationLink(destination: EditPlanView()) {
+                            Label("Plan", systemImage: "calendar")
                                 .frame(maxWidth: .infinity)
                                 .foregroundColor(.white)
                                 .padding()
@@ -151,12 +151,12 @@ struct ProfileView: View {
             await authViewModel.signInWithGoogle { _ in
                 globalVM.refreshUser()
                 guard let userSession = globalVM.userSession else { return }
-                DBUserDataService.shared.fetchUserData(uid: userSession.uid, completion: { res in
+                FBMUserData.shared.fetchUserData(uid: userSession.uid, completion: { res in
                     switch res {
                     case .success(let userData):
                         globalVM.userData = userData
                     case .failure(_):
-                        DBUserDataService.shared.createUserData(uid: userSession.uid, data: globalVM.userData)
+                        FBMUserData.shared.createUserData(uid: userSession.uid, data: globalVM.userData)
                     }
                 })
             }

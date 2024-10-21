@@ -12,9 +12,9 @@ enum DBError: Error {
     case noDocument
 }
 
-class DBUserDataService {
+class FBMUserData {
     
-    static let shared = DBUserDataService()
+    static let shared = FBMUserData()
     private let db = Firestore.firestore()
     private let userCollection = "user_data"
     

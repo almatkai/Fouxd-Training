@@ -61,7 +61,6 @@ struct SecondLaunchView: View {
         case age = "Age"
         case gender = "Gender"
         case activityLevel = "Activity Level"
-        case goal = "Goal"
     }
     
     private func buttonWithBackground(for type: PickerType) -> some View {
@@ -107,8 +106,6 @@ struct SecondLaunchView: View {
             return "Gender: \(globalVM.userData.gender == .male ? "Male" : globalVM.userData.gender == .female ? "Female" : "Other")"
         case .activityLevel:
             return "Activity Level: \(globalVM.userData.activityLevel)"
-        case .goal:
-            return "Goal: \(globalVM.userData.goal)"
         }
     }
     
@@ -146,12 +143,6 @@ struct SecondLaunchView: View {
                     Text("Light").tag(ActivityLevel.light).font(.callout)
                     Text("Moderate").tag(ActivityLevel.moderate).font(.callout)
                     Text("Active").tag(ActivityLevel.active).font(.callout)
-                }
-            case .goal:
-                Picker("Goal", selection: $globalVM.userData.goal) {
-                    Text("Weight Loss").tag(FitnessGoal.weightLoss).font(.callout)
-                    Text("Muscle Gain").tag(FitnessGoal.muscleGain).font(.callout)
-                    Text("Endurance").tag(FitnessGoal.endurance).font(.callout)
                 }
             }
         }

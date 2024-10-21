@@ -11,7 +11,7 @@ import FirebaseAuth
 struct DashboardView: View {
     @EnvironmentObject private var globalVM: GlobalVM
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = false
-    
+    @State var plans: [Plan] = []
     var body: some View {
         NavigationStack {
             VStack {
@@ -41,7 +41,7 @@ struct DashboardView: View {
                 }
                 
                 Button(action: {
-                    print(PlanMakerService.shared.determinePlanType(for: globalVM.userData))
+                    globalVM.plans = PlanMakerService.shared.determinePlanType(for: globalVM.userData, userId: globalVM.userSession?.uid ?? "")
                 }){
                     Label("Add Workout", systemImage: "plus")
                 }
