@@ -26,7 +26,6 @@ struct ContentView: View {
                                 if case .success(let userData) = res {
                                     globalVM.userData = userData
                                 }
-                                
                             })
                         } else {
                             guard let userData = UDUserData.shared.fetchUserDataLocally() else { return }

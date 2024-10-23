@@ -19,8 +19,10 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 
 @main
 struct Fouxd_TrainingApp: App {
-    @StateObject var globalVM = GlobalVM()
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+    
+    @StateObject var globalVM = GlobalVM()
+    
     var body: some Scene {
         WindowGroup {
             ContentView()

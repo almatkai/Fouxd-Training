@@ -165,7 +165,9 @@ struct ThirdView: View {
             }, imageName: "chevron.left.circle.fill", width: globalVM.screenWidth * 0.4)
             Spacer()
             NavigationButton(action: {
-                goToNext()
+                Task {
+                    await goToNext()
+                }
             }, imageName: "chevron.right.circle.fill", width: globalVM.screenWidth * 0.4)
         }
     }
@@ -180,13 +182,13 @@ struct ThirdView: View {
         }
     }
     
-    private func goToNext() {
+    private func goToNext() async {
         let index = globalVM.userData.availibility.firstIndex { $0.weekDay == selectedDay.weekDay }
         if let currentIndex = index, currentIndex < globalVM.userData.availibility.count - 1 {
             selectedDay = globalVM.userData.availibility[currentIndex + 1]
             updateSelectedTimeFromAvailability()
         } else {
-            globalVM.saveUserData()
+            await globalVM.saveUserData()
             isFirstLaunch = false
         }
     }

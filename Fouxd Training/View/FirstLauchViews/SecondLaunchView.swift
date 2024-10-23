@@ -114,8 +114,9 @@ struct SecondLaunchView: View {
             switch pickerType {
             case .weight:
                 Picker("Weight", selection: $globalVM.userData.weight) {
-                    ForEach(30...150, id: \.self) { weight in
-                        Text("\(weight) kg").tag(Double(weight))
+                    ForEach(Array(stride(from: 10, to: 300, by: 0.5)), id: \.self) { weight in
+                        Text("\(String(format: weight.truncatingRemainder(dividingBy: 1) == 0 ? "%.0f" : "%.1f", weight)) kg")
+                            .tag(Double(weight))
                             .font(.callout)
                     }
                 }

@@ -9,14 +9,14 @@ import Foundation
 import FirebaseFirestore
 
 // MARK: - Firebase Manager
-final class FirebaseManager {
-    static let shared = FirebaseManager()
+final class FBMPlan {
+    static let shared = FBMPlan()
     private let db = Firestore.firestore()
     private let planCollection = "plans"
 
     private init() {}
     
-    func savePlan(_ plan: Plan, userId: String) async throws {
+    func savePlan(_ plan: WeeklyTrainingPlan, userId: String) async throws {
         let documentRef = db.collection(planCollection).document(userId)
         try documentRef.setData(from: plan, merge: true)
     }
@@ -27,7 +27,7 @@ final class FirebaseManager {
         return try? document.data(as: Plan.self)
     }
     
-    func updatePlan(_ plan: Plan, userId: String) async throws {
+    func updatePlan(_ plan: WeeklyTrainingPlan, userId: String) async throws {
         try await savePlan(plan, userId: userId)
     }
     

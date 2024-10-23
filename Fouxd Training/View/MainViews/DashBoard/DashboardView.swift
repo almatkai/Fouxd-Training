@@ -41,7 +41,7 @@ struct DashboardView: View {
                 }
                 
                 Button(action: {
-                    globalVM.plans = PlanMakerService.shared.determinePlanType(for: globalVM.userData, userId: globalVM.userSession?.uid ?? "")
+                    globalVM.plans = PlanMakerService.shared.createPlan(userData: globalVM.userData)
                 }){
                     Label("Add Workout", systemImage: "plus")
                 }

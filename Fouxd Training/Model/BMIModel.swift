@@ -7,15 +7,12 @@
 
 import Foundation
 
-struct BMI {
-    let value: Double
-    let category: BMICategory
-}
-
 enum BMICategory {
     case underweight, normal, overweight, obese
 
-    static func categorize(bmi: Double) -> BMICategory {
+    static func categorize(weight: Double, height: Int) -> BMICategory {
+        let heightM = Double(height / 100)
+        let bmi = Double(weight) / (heightM * heightM)
         switch bmi {
         case ..<18.5: return .underweight
         case 18.5..<24.9: return .normal
@@ -23,4 +20,5 @@ enum BMICategory {
         default: return .obese
         }
     }
+    
 }

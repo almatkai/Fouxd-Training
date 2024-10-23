@@ -11,7 +11,7 @@ import FirebaseAuth
 struct UserData: Codable {
     var id: UUID = UUID()
     var weight: Double = 62
-    var height: Double = 175
+    var height: Int = 175
     var age: Int = 18
     var gender: Gender = .male
     var availibility: [Availability] = [.init(weekDay: .monday, freeTime: 0.0), .init(weekDay: .tuesday, freeTime: 0.0), .init(weekDay: .wednesday, freeTime: 0.0), .init(weekDay: .thursday, freeTime: 0.0), .init(weekDay: .friday, freeTime: 0.0), .init(weekDay: .saturday, freeTime: 0.0), .init(weekDay: .sunday, freeTime: 0.0)]
@@ -58,44 +58,4 @@ enum WeekDay: Codable, CaseIterable {
 
 enum Gender: Codable {
     case male, female, other
-}
-
-enum ActivityLevel: Codable {
-    case sedentary, light, moderate, active
-    
-    var rawValue: String {
-        switch self {
-        case .sedentary:
-            return "Sedentary"
-        case .light:
-            return "Light"
-        case .moderate:
-            return "Moderate"
-        case .active:
-            return "Active"
-        }
-    }
-    
-    var duration: SessionType {
-        switch self {
-        case .sedentary:
-            return .repsAndSets(reps: 120, sets: 3, rest: 30)
-        case .light:
-            return .repsAndSets(reps: 90, sets: 4, rest: 30)
-        case .moderate:
-            return .repsAndSets(reps: 60, sets: 3, rest: 30)
-        case .active:
-            return .repsAndSets(reps: 30, sets: 3, rest: 30)
-        }
-    }
-    
-    func adjustedDuration(for gender: Gender) -> SessionType {
-        let baseDuration = self.duration
-        switch gender {
-        case .male, .other:
-            return .repsAndSets(reps: baseDuration.reps, sets: baseDuration.sets, rest: baseDuration.rest)
-        case .female:
-            return .repsAndSets(reps: baseDuration.reps > 60 ? baseDuration.reps - 10 : baseDuration.reps - 20, sets: baseDuration.sets, rest: baseDuration.rest)
-        }
-    }
 }

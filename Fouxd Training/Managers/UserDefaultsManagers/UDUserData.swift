@@ -58,7 +58,7 @@ class UDUserData {
                 userData.weight = newValue
             }
         case "height":
-            if let newValue = value as? Double {
+            if let newValue = value as? Int {
                 userData.height = newValue
             }
         case "age":

@@ -8,26 +8,26 @@
 import Foundation
 
 // MARK: - UserDefaults Manager
-final class UserDefaultsManager {
-    static let shared = UserDefaultsManager()
+final class UDPlan {
+    static let shared = UDPlan()
     private let defaults = UserDefaults.standard
-    private let planKey = "userWorkoutPlan"
+    private let planKey = "plans"
     
     private init() {}
     
-    func savePlan(_ plan: Plan) throws {
+    func savePlan(_ plan: WeeklyTrainingPlan) throws {
         let encoder = JSONEncoder()
         let data = try encoder.encode(plan)
         defaults.set(data, forKey: planKey)
     }
     
-    func fetchPlan() throws -> Plan? {
+    func fetchPlan() throws -> WeeklyTrainingPlan? {
         guard let data = defaults.data(forKey: planKey) else { return nil }
         let decoder = JSONDecoder()
-        return try decoder.decode(Plan.self, from: data)
+        return try decoder.decode(WeeklyTrainingPlan.self, from: data)
     }
     
-    func updatePlan(_ plan: Plan) throws {
+    func updatePlan(_ plan: WeeklyTrainingPlan) throws {
         try savePlan(plan)
     }
     

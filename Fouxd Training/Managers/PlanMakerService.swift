@@ -8,197 +8,127 @@
 import Foundation
 
 class PlanMakerService {
-    // Singleton
-    static let shared = PlanMakerService()
     
+    static let shared = PlanMakerService()
     private init() {}
     
-    public func determinePlanType(for user: UserData, userId: String) -> [Plan] {
-        let bmi = calculateBMI(weight: user.weight, height: user.height)
+    func createPlan(userData: UserData) -> [Plan] {
         var plans: [Plan] = []
-        
-        for day in user.availibility {
-            var plan = createPlan(userId: userId, bmiCategory: bmi.category, for: day, activityLevel: user.activityLevel)
-            plan.weekDay = day.weekDay
+        let availability = userData.availibility
+        let activityLevel = userData.activityLevel
+        let bmiCategory = BMICategory.categorize(weight: userData.weight, height: userData.height)
+        var id = 1
+        for day in availability {
+            var plan = Plan(id: id, weekDay: day.weekDay, exercises: [], lastUpdated: Date())
+            var remainingTime = Int(day.freeTime * 60 * 60) // Convert hours to seconds
+            
+            let extraRestTime: Int = {
+                switch bmiCategory {
+                case .overweight: return 10
+                case .obese: return 20
+                default: return 0
+                }
+            }()
+            
+            while remainingTime > 0 {
+                let exercise = exerciseRandomizer(bmi: bmiCategory)
+                let exerciseWrapper: ExerciseWrapper = ExerciseWrapper.wrap(exercise)
+                let exerciseSession = ExerciseSession(
+                    exerciseWrapper: exerciseWrapper,
+                    configuration: standardConfiguration(for: activityLevel, gender: userData.gender))
+                
+                remainingTime -= exerciseSession.configuration.sets *
+                                         (exerciseSession.configuration.restSeconds +
+                                          exerciseSession.configuration.reps) + extraRestTime
+                
+                plan.exercises.append(exerciseSession)
+            }
+            if !plan.exercises.isEmpty {
+                plan.exercises.removeLast()
+            }
+            
             plans.append(plan)
+            id += 1
         }
         
         return plans
     }
-}
-
-//// MARK: - Private Methods
-private extension PlanMakerService {
-    func calculateBMI(weight: Double, height: Double) -> BMI {
-        let heightInMeters = height / 100.0
-        let bmiValue = weight / (heightInMeters * heightInMeters)
-        let category = BMICategory.categorize(bmi: bmiValue)
-        return BMI(value: bmiValue, category: category)
+    
+    private func standardConfiguration(for level: ActivityLevel, gender: Gender) -> ExerciseConfiguration {
+        let reps = gender == .female ?
+            (level.baseReps > 60 ? level.baseReps - 20 : level.baseReps - 10) : level.baseReps
+        
+        return ExerciseConfiguration(
+            reps: reps,
+            sets: level.sets,
+            restSeconds: 30
+        )
     }
     
-    func createPlan(userId: String,bmiCategory: BMICategory, for day: Availability, activityLevel: ActivityLevel) -> Plan {
-        var plan = Plan(userId: userId, weekDay: day.weekDay, exercises: [])
-        var remainingTime = day.freeTime * 60.0 * 60.0 // Convert hours to seconds
-        var overalSecond: Double = 0.0
-        // Extra rest time for overweight and obese categories (in seconds)
-        let extraRestTime: Int = {
-            switch bmiCategory {
-            case .overweight:
-                return 10  // Additional 30 seconds rest
-            case .obese:
-                return 20  // Additional 45 seconds rest
-            default:
-                return 0
-            }
-        }()
-        
-        switch bmiCategory {
+    private var categoryWeights: [ExerciseCategory: Int] = [
+        .core: 1,
+        .fullBody: 1,
+        .lowerBody: 1,
+        .upperBody: 1
+    ]
+
+    func exerciseRandomizer(bmi: BMICategory) -> Exercise {
+
+        switch bmi {
         case .underweight:
-            // Focus on strength building exercises matching activity level
-            while remainingTime > 0 {
-                let exercise: Exercise = {
-                    switch activityLevel {
-                    case .sedentary, .light:
-                        return plan.exercises.count % 2 == 0 ?
-                            UpperBodyExercises.tricepDips :
-                            LowerBodyExercises.gluteBridge
-                    case .moderate, .active:
-                        return plan.exercises.count % 2 == 0 ?
-                            UpperBodyExercises.pushUps :
-                            LowerBodyExercises.squats
-                    }
-                }()
-                
-                let session = ExerciseSession(
-                    exercise: exercise,
-                    sessionType: activityLevel.duration
-                )
-                
-                overalSecond += Double((session.sessionType.sets *
-                                        (session.sessionType.rest + session.sessionType.reps)) + 10)
-                plan.exercises.append(session)
-                remainingTime -= Double((session.sessionType.sets *
-                                         (session.sessionType.rest + session.sessionType.reps)) + 10)
-            }
-            
+            categoryWeights[.fullBody] = 3
+            categoryWeights[.core] = 2
+            categoryWeights[.lowerBody] = 1
+            categoryWeights[.upperBody] = 1
         case .normal:
-            // Balanced workout with exercise intensity matching activity level
-            while remainingTime > 0 {
-                let exercise: Exercise = {
-                    switch (plan.exercises.count % 4, activityLevel) {
-                    case (0, .sedentary), (0, .light):
-                        return UpperBodyExercises.tricepDips
-                    case (0, _):
-                        return UpperBodyExercises.pushUps
-                    case (1, .sedentary), (1, .light):
-                        return LowerBodyExercises.gluteBridge
-                    case (1, _):
-                        return LowerBodyExercises.squats
-                    case (2, .sedentary):
-                        return CoreExercises.sitUps
-                    case (2, _):
-                        return CoreExercises.plank
-                    case (_, .sedentary), (_, .light):
-                        return FullBodyExercises.jumpingJacks
-                    default:
-                        return FullBodyExercises.burpees
-                    }
-                }()
-                
-                let session = ExerciseSession(
-                    exercise: exercise,
-                    sessionType: activityLevel.duration
-                )
-                
-                overalSecond += Double((session.sessionType.sets *
-                                        (session.sessionType.rest + session.sessionType.reps)) + 10)
-                plan.exercises.append(session)
-                remainingTime -= Double((session.sessionType.sets *
-                                         (session.sessionType.rest + session.sessionType.reps)) + 10)
-            }
-            
+            categoryWeights[.fullBody] = 2
+            categoryWeights[.core] = 2
+            categoryWeights[.lowerBody] = 2
+            categoryWeights[.upperBody] = 2
         case .overweight:
-            // Cardio focused with intensity based on activity level and extra rest
-            while remainingTime > 0 {
-                let exercise: Exercise = {
-                    switch (plan.exercises.count % 3, activityLevel) {
-                    case (0, .sedentary), (0, .light):
-                        return FullBodyExercises.jumpingJacks
-                    case (0, _):
-                        return FullBodyExercises.mountainClimbers
-                    case (1, .sedentary):
-                        return CoreExercises.sitUps
-                    case (1, _):
-                        return CoreExercises.bicycleCrunches
-                    case (_, .sedentary), (_, .light):
-                        return LowerBodyExercises.wallSit
-                    default:
-                        return LowerBodyExercises.lunges
-                    }
-                }()
-                
-                let baseDuration = activityLevel.duration
-                let sessionType = SessionType.repsAndSets(
-                    reps: baseDuration.reps,
-                    sets: baseDuration.sets,
-                    rest: baseDuration.rest + extraRestTime
-                )
-                
-                let session = ExerciseSession(
-                    exercise: exercise,
-                    sessionType: sessionType
-                )
-                
-                overalSecond += Double((session.sessionType.sets *
-                                        (session.sessionType.rest + session.sessionType.reps)) + 10)
-                plan.exercises.append(session)
-                remainingTime -= Double((session.sessionType.sets *
-                                         (session.sessionType.rest + session.sessionType.reps)) + 10)
-            }
-            
+            categoryWeights[.lowerBody] = 3
+            categoryWeights[.core] = 2
+            categoryWeights[.upperBody] = 1
+            categoryWeights[.fullBody] = 1
         case .obese:
-            // Low impact exercises adjusted for activity level with extended rest
-            while remainingTime > 0 {
-                let exercise: Exercise = {
-                    switch (plan.exercises.count % 3, activityLevel) {
-                    case (0, .sedentary):
-                        return LowerBodyExercises.wallSit
-                    case (0, .light):
-                        return LowerBodyExercises.gluteBridge
-                    case (0, _):
-                        return LowerBodyExercises.squats
-                    case (1, .sedentary), (1, .light):
-                        return CoreExercises.sitUps
-                    case (1, _):
-                        return CoreExercises.plank
-                    case (_, .sedentary):
-                        return FullBodyExercises.jumpingJacks
-                    case (_, .light):
-                        return FullBodyExercises.highKnees
-                    default:
-                        return FullBodyExercises.mountainClimbers
-                    }
-                }()
-                
-                let baseDuration = activityLevel.duration
-                let sessionType = SessionType.repsAndSets(
-                    reps: baseDuration.reps,
-                    sets: baseDuration.sets,
-                    rest: baseDuration.rest + extraRestTime
-                )
-                
-                let session = ExerciseSession(
-                    exercise: exercise,
-                    sessionType: sessionType
-                )
-                
-                overalSecond += Double((session.sessionType.sets *
-                                        (session.sessionType.rest + session.sessionType.reps)) + 10)
-                plan.exercises.append(session)
-                remainingTime -= Double((session.sessionType.sets *
-                                         (session.sessionType.rest + session.sessionType.reps)) + 10)
+            categoryWeights[.lowerBody] = 4
+            categoryWeights[.core] = 3
+            categoryWeights[.fullBody] = 1
+            categoryWeights[.upperBody] = 1
+        }
+
+        // Get all categories with their weights
+        let categories = ExerciseCategory.allCases
+        var weightedCategories: [ExerciseCategory] = []
+        
+        // Populate the weighted list of categories
+        for category in categories {
+            if let weight = categoryWeights[category] {
+                for _ in 0..<weight {
+                    weightedCategories.append(category)
+                }
             }
         }
-        return plan
+        
+        // Randomly select a category from the weighted list
+        guard let selectedCategory = weightedCategories.randomElement() else {
+            fatalError("No exercise category found")
+        }
+
+        // Fetch a random exercise from the selected category
+        return getRandomExercise(for: selectedCategory)
+    }
+
+    // Assume this function returns a random Exercise for the given category
+    func getRandomExercise(for category: ExerciseCategory) -> Exercise {
+        // Fetch the list of exercises for the given category
+        let exercises = category.exercises
+        
+        // Randomly select an exercise from the list
+        guard let randomExercise = exercises.randomElement() else {
+            fatalError("No exercises available for the selected category")
+        }
+        
+        return randomExercise
     }
 }
