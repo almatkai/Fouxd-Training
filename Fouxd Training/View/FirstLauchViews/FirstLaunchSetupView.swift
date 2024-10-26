@@ -11,7 +11,6 @@ import GoogleSignInSwift
 
 struct FirstLaunchSetupView: View {
     
-    @EnvironmentObject private var globalVM: GlobalVM
     @State var pageCounter = 0
     
     var body: some View {

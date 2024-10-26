@@ -2,7 +2,7 @@
 //  PlanMakerService.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 15.10.2024.
+//  Created by Naukanova Nuraiym on 15.10.2024.
 //
 
 import Foundation
@@ -61,7 +61,7 @@ class PlanMakerService {
         return ExerciseConfiguration(
             reps: reps,
             sets: level.sets,
-            restSeconds: 30
+            restSeconds: 4 // For test purposes, actual is 30
         )
     }
     

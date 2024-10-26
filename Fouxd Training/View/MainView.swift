@@ -2,7 +2,7 @@
 //  MainView.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 16.10.2024.
+//  Created by Naukanova Nuraiym on 16.10.2024.
 //
 
 import SwiftUI

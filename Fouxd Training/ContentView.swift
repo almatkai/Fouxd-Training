@@ -2,7 +2,7 @@
 //  ContentView.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 15.10.2024.
+//  Created by Naukanova Nuraiym on 15.10.2024.
 //
 
 import SwiftUI
@@ -10,7 +10,10 @@ import SwiftUI
 struct ContentView: View {
 
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
-    @EnvironmentObject private var globalVM: GlobalVM
+    @EnvironmentObject private var planVM: PlanViewModel
+    @EnvironmentObject private var userDataVM: UserDataViewModel
+    @EnvironmentObject private var userSessionVM: UserSessionViewModel
+    @EnvironmentObject private var workoutHistoryVM: WorkoutHistoryViewModel
     
     var body: some View {
         VStack {
@@ -20,24 +23,20 @@ struct ContentView: View {
                     .transition(.move(edge: .leading))
             } else {
                 MainView()
+                    .transition(.move(edge: .trailing))
                     .onAppear {
-                        if let user = globalVM.userSession {
-                            FBMUserData.shared.fetchUserData(uid: user.uid, completion: { res in
-                                if case .success(let userData) = res {
-                                    globalVM.userData = userData
-                                }
-                            })
-                        } else {
-                            guard let userData = UDUserData.shared.fetchUserDataLocally() else { return }
-                            globalVM.userData = userData
-                        }
-                        HealthKitService.shared.setup()
+                        setup()
                     }
             }
         }
     }
+    
+    private func setup() {
+        userSessionVM.refreshUser()
+        userDataVM.fetchUserData(userSession: userSessionVM.userSession)
+        planVM.fetchPlans(userSession: userSessionVM.userSession)
+        workoutHistoryVM.fetchWorkoutHistory(userId: userSessionVM.userSession?.uid ?? "")
+        HealthKitService.shared.setup()
+    }
 }
 
-#Preview {
-    ContentView()
-}

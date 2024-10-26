@@ -2,7 +2,7 @@
 //  Fouxd_TrainingApp.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 15.10.2024.
+//  Created by Naukanova Nuraiym on 15.10.2024.
 //
 
 import SwiftUI
@@ -21,15 +21,18 @@ class AppDelegate: NSObject, UIApplicationDelegate {
 struct Fouxd_TrainingApp: App {
     @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
     
-    @StateObject var globalVM = GlobalVM()
+    @StateObject private var planViewModel = PlanViewModel()
+    @StateObject private var userDataViewModel = UserDataViewModel()
+    @StateObject private var userSessionViewModel = UserSessionViewModel()
+    @StateObject private var historyVM = WorkoutHistoryViewModel()
     
     var body: some Scene {
         WindowGroup {
             ContentView()
-                .environmentObject(globalVM)
-                .onAppear {
-                    globalVM.refreshUser()
-                }
+                .environmentObject(planViewModel)
+                .environmentObject(userDataViewModel)
+                .environmentObject(userSessionViewModel)
+                .environmentObject(historyVM)
         }
     }
 }

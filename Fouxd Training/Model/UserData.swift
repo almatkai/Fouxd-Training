@@ -2,7 +2,7 @@
 //  UserModel.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 15.10.2024.
+//  Created by Naukanova Nuraiym on 15.10.2024.
 //
 
 import Foundation
@@ -14,7 +14,13 @@ struct UserData: Codable {
     var height: Int = 175
     var age: Int = 18
     var gender: Gender = .male
-    var availibility: [Availability] = [.init(weekDay: .monday, freeTime: 0.0), .init(weekDay: .tuesday, freeTime: 0.0), .init(weekDay: .wednesday, freeTime: 0.0), .init(weekDay: .thursday, freeTime: 0.0), .init(weekDay: .friday, freeTime: 0.0), .init(weekDay: .saturday, freeTime: 0.0), .init(weekDay: .sunday, freeTime: 0.0)]
+    var availibility: [Availability] = [.init(weekDay: .monday, freeTime: 0.0),
+                                        .init(weekDay: .tuesday, freeTime: 0.0),
+                                        .init(weekDay: .wednesday, freeTime: 0.0),
+                                        .init(weekDay: .thursday, freeTime: 0.0),
+                                        .init(weekDay: .friday, freeTime: 0.0),
+                                        .init(weekDay: .saturday, freeTime: 0.0),
+                                        .init(weekDay: .sunday, freeTime: 0.0)]
     var activityLevel: ActivityLevel = .moderate
     var lastUpdated: Date = Date()
     
@@ -56,6 +62,8 @@ enum WeekDay: Codable, CaseIterable {
 }
 
 
-enum Gender: Codable {
-    case male, female, other
+enum Gender: String, Codable {
+    case male = "male"
+    case female = "female"
+    case other = "other"
 }

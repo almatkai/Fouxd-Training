@@ -2,21 +2,25 @@
 //  HomeView.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 17.10.2024.
+//  Created by Naukanova Nuraiym on 17.10.2024.
 //
 
 import SwiftUI
 import FirebaseAuth
 
 struct DashboardView: View {
-    @EnvironmentObject private var globalVM: GlobalVM
+    @EnvironmentObject private var userSessionVM: UserSessionViewModel
+    @EnvironmentObject private var planVM: PlanViewModel
+    @EnvironmentObject private var userDataVM: UserDataViewModel
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = false
     @State var plans: [Plan] = []
     var body: some View {
         NavigationStack {
             VStack {
+                Text(userSessionVM.userSession?.uid ?? "NO USER ID")
                 Button(action: {
                     isFirstLaunch = true
+                    userDataVM.userData = UserData()
                 }){
                     Text("RESET")
                 }
@@ -41,10 +45,17 @@ struct DashboardView: View {
                 }
                 
                 Button(action: {
-                    globalVM.plans = PlanMakerService.shared.createPlan(userData: globalVM.userData)
+                    planVM.plans = PlanMakerService.shared.createPlan(userData: userDataVM.userData)
                 }){
                     Label("Add Workout", systemImage: "plus")
                 }
+                
+                Button(action: {
+                    userSessionVM.refreshUser()
+                }){
+                    Label("Refresh User", systemImage: "arrow.clockwise")
+                }
+                
             }
         }
     }

@@ -2,14 +2,14 @@
 //  GoogleSingInButton.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 18.10.2024.
+//  Created by Naukanova Nuraiym on 18.10.2024.
 //
 
 import SwiftUI
 
 struct GoogleSingInButton: View {
     
-    @EnvironmentObject private var globalVM: GlobalVM
+    @EnvironmentObject private var userSessionVM: UserSessionViewModel
     @StateObject private var authViewModel = AuthenticationViewModel()
     
     var action: () -> Void
@@ -20,7 +20,7 @@ struct GoogleSingInButton: View {
         ) {
             HStack {
                 HStack {
-                    if let userSession = globalVM.userSession {
+                    if let userSession = userSessionVM.userSession {
                         if let url = userSession.photoURL {
                             AsyncImage(url: url) { image in
                                 image
@@ -60,7 +60,7 @@ struct GoogleSingInButton: View {
                 }
                 .padding()
             }
-            .classicButton(screenWidth: globalVM.screenWidth * 0.8)
+            .classicButton(screenWidth: width() * 0.8)
         }
     }
 }

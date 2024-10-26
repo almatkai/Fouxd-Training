@@ -2,7 +2,7 @@
 //  DataBaseService.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 17.10.2024.
+//  Created by Naukanova Nuraiym on 17.10.2024.
 //
 
 import FirebaseFirestore
@@ -18,7 +18,44 @@ class FBMUserData {
     private let db = Firestore.firestore()
     private let userCollection = "user_data"
     
+    // MARK: - Private Init
     private init() {}
+    
+    func checkAndCreateUserData(uid: String, defaultData: UserData) async throws -> UserData {
+        let docRef = db.collection(userCollection).document(uid)
+        
+        do {
+            let document = try await docRef.getDocument()
+            
+            if document.exists {
+                // User data exists, fetch and return it
+                return try document.data(as: UserData.self)
+            } else {
+                // User data doesn't exist, create new one
+                try docRef.setData(from: defaultData)
+                return defaultData
+            }
+        } catch {
+            throw error
+        }
+    }
+    
+    func isUserDataExist(uid: String) async throws -> UserData? {
+        let docRef = db.collection(userCollection).document(uid)
+        
+        do {
+            let document = try await docRef.getDocument()
+            
+            if document.exists {
+                // User data exists, fetch and return it
+                return try document.data(as: UserData.self)
+            } else {
+                return nil
+            }
+        } catch {
+            return nil
+        }
+    }
     
     func fetchUserData(uid: String, completion: @escaping (Result<UserData, Error>) -> Void) {
         let docRef = db.collection(userCollection).document(uid)
@@ -95,4 +132,3 @@ class FBMUserData {
         print("Error during \(operation): \(error.localizedDescription)")
     }
 }
-

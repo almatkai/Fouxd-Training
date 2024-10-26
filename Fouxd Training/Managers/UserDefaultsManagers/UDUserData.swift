@@ -2,7 +2,7 @@
 //  LocalUserDataService.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 19.10.2024.
+//  Created by Naukanova Nuraiym on 19.10.2024.
 //
 
 import Foundation
@@ -15,6 +15,7 @@ class UDUserData {
     private let defaults = UserDefaults.standard
     private let userDataKey = "localUserData"
     
+    // MARK: - Private Init
     private init() {}
     
     // MARK: - UserDefaults Methods

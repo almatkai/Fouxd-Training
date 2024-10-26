@@ -2,25 +2,44 @@
 //  EditPlanView.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 20.10.2024.
+//  Created by Naukanova Nuraiym on 20.10.2024.
 //
 
 import SwiftUI
 
 struct EditPlanView: View {
-    @EnvironmentObject private var globalVM: GlobalVM
+    @EnvironmentObject private var planVM: PlanViewModel
+    @EnvironmentObject private var userDataVM: UserDataViewModel
+    @EnvironmentObject private var userSessionViewModel: UserSessionViewModel
+    @Environment(\.dismiss) private var dismiss
     
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                ForEach(0..<globalVM.plans.count, id: \.self) { i in
-                    let plan = globalVM.plans[i]
-                    let availability = globalVM.userData.availibility[i]
+                ForEach(0..<planVM.plans.count, id: \.self) { i in
+                    let plan = planVM.plans[i]
+                    let availability = userDataVM.userData.availibility[i]
                     
                     PlanCard(plan: plan, availability: availability)
                 }
             }
             .padding()
+        }
+        .navigationTitle("Exercise plan")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            
+            ToolbarItem(placement: .navigationBarTrailing) {
+                Button(action: {
+                    planVM.createPlans(userData: userDataVM.userData)
+                    
+                    Task {
+                        await planVM.savePlans(userSession: userSessionViewModel.userSession)
+                    }
+                }){
+                    Label("Reshuffle", systemImage: "arrow.clockwise")
+                }
+            }
         }
     }
 }
@@ -43,6 +62,8 @@ struct PlanCard: View {
         }
     }
     
+    @State var showExercises = false
+    
     var body: some View {
         VStack(spacing: 0) {
             // Header
@@ -52,7 +73,7 @@ struct PlanCard: View {
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                 Spacer()
-                Text(formattedTime)
+                Text(availability.freeTime == 0 ? "Not set" : formattedTime)
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.white.opacity(0.9))
@@ -65,12 +86,21 @@ struct PlanCard: View {
                     endPoint: .trailing
                 )
             )
+            .onTapGesture {
+                // Slide animation like in List
+                withAnimation(.easeInOut(duration: 0.3)){
+                    showExercises.toggle()
+                }
+            }
             
             // Exercises List
-            VStack(spacing: 0) {
-                ForEach(plan.exercises, id: \.self) { exercise in
-                    ExerciseRow(title: exercise.exerciseWrapper.exercise.title)
+            if showExercises {
+                VStack(spacing: 0) {
+                    ForEach(plan.exercises, id: \.self) { exercise in
+                        ExerciseRow(title: exercise.exerciseWrapper.exercise.title, description: exercise.exerciseWrapper.exercise.description)
+                    }
                 }
+                .transition(.slide.animation(.easeInOut(duration: 0.3)))
             }
         }
         .background(Color.white)
@@ -81,20 +111,30 @@ struct PlanCard: View {
 
 struct ExerciseRow: View {
     let title: String
+    let description: String
+    @State var showDesc = false
     
     var body: some View {
-        HStack {
-            Text(title)
-                .foregroundColor(.primary)
-            Spacer()
-            Image(systemName: "chevron.right")
-                .font(.system(size: 14))
-                .foregroundColor(.gray)
+        VStack {
+            HStack {
+                Text(title)
+                    .foregroundColor(.primary)
+                Spacer()
+                Image(systemName: showDesc ? "chevron.down" : "chevron.right")
+                    .font(.system(size: 14))
+                    .foregroundColor(.gray)
+            }
+            if showDesc {
+                Text(description)
+                    .font(.caption)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.top, 8)
+            }
         }
         .padding(.horizontal)
         .padding(.vertical, 12)
         .background(
-            Color.white
+            Color(.cwhite)
                 .overlay(
                     Color.gray.opacity(0.1)
                         .opacity(0)
@@ -102,7 +142,9 @@ struct ExerciseRow: View {
         )
         .contentShape(Rectangle())
         .onTapGesture {
-            // Handle tap action here
+            withAnimation(.easeInOut(duration: 0.3)){
+                showDesc.toggle()
+            }
         }
         .overlay(
             Divider()

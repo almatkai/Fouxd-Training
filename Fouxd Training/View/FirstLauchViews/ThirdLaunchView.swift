@@ -2,13 +2,16 @@
 //  ThirdLaunchView.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 20.10.2024.
+//  Created by Naukanova Nuraiym on 20.10.2024.
 //
 
 import SwiftUI
 
 struct ThirdView: View {
-    @EnvironmentObject private var globalVM: GlobalVM
+    @EnvironmentObject private var userDataVM: UserDataViewModel
+    @EnvironmentObject private var userSessionVM: UserSessionViewModel
+    @EnvironmentObject private var planVM: PlanViewModel
+    
     @StateObject private var authViewModel = AuthenticationViewModel()
     @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
     @State private var selectedDay: Availability = Availability(weekDay: .monday, freeTime: 0)
@@ -22,7 +25,7 @@ struct ThirdView: View {
                 Image("third_screen")
                     .resizable()
                     .scaledToFit()
-                    .offset(y: -globalVM.screenHeight * 0.05)
+                    .offset(y: -height() * 0.05)
                     .mask(
                         LinearGradient(gradient: Gradient(colors: [Color.black, Color.black.opacity(0)]), startPoint: .top, endPoint: .bottom)
                     )
@@ -47,14 +50,14 @@ struct ThirdView: View {
                 
                 HStack {
                     VStack {
-                        ForEach(globalVM.userData.availibility, id: \.self) { day in
+                        ForEach(userDataVM.userData.availibility, id: \.self) { day in
                             dayButtonWithBackground(for: day)
                         }
                     }
-                    .frame(width: globalVM.screenWidth * 0.58)
+                    .frame(width: width() * 0.58)
                     
                     timePickerView()
-                        .frame(width: globalVM.screenWidth * 0.34)
+                        .frame(width: width() * 0.34)
                     
                 }.padding(.horizontal, 32)
                 
@@ -65,7 +68,7 @@ struct ThirdView: View {
         }
         .onAppear {
             // Initialize with the first day's time
-            if let firstDay = globalVM.userData.availibility.first {
+            if let firstDay = userDataVM.userData.availibility.first {
                 updateSelectedTimeFromAvailability()
             }
         }
@@ -78,10 +81,10 @@ struct ThirdView: View {
     }
     
     private func updateAvailabilityTime() {
-        if let index = globalVM.userData.availibility.firstIndex(where: { $0.weekDay == selectedDay.weekDay }) {
+        if let index = userDataVM.userData.availibility.firstIndex(where: { $0.weekDay == selectedDay.weekDay }) {
             // Convert hour and minute to freeTime (e.g., 9:30 -> 9.5)
             let freeTime = Double(selectedHour) + (Double(selectedMinute) / 60.0)
-            globalVM.userData.availibility[index].freeTime = freeTime
+            userDataVM.userData.availibility[index].freeTime = freeTime
         }
     }
     
@@ -133,7 +136,7 @@ struct ThirdView: View {
                 }
             }
             .pickerStyle(WheelPickerStyle())
-            .frame(width: globalVM.screenWidth * 0.15)
+            .frame(width: width() * 0.15)
             .padding(0)
             .onChange(of: selectedHour) { _ in
                 updateAvailabilityTime()
@@ -149,7 +152,7 @@ struct ThirdView: View {
                 }
             }
             .pickerStyle(WheelPickerStyle())
-            .frame(width: globalVM.screenWidth * 0.15)
+            .frame(width: width() * 0.15)
             .padding(0)
             .onChange(of: selectedMinute) { _ in
                 updateAvailabilityTime()
@@ -162,20 +165,20 @@ struct ThirdView: View {
         HStack {
             NavigationButton(action: {
                 goBackToPrevious()
-            }, imageName: "chevron.left.circle.fill", width: globalVM.screenWidth * 0.4)
+            }, imageName: "chevron.left.circle.fill", width: width() * 0.4)
             Spacer()
             NavigationButton(action: {
                 Task {
                     await goToNext()
                 }
-            }, imageName: "chevron.right.circle.fill", width: globalVM.screenWidth * 0.4)
+            }, imageName: "chevron.right.circle.fill", width: width() * 0.4)
         }
     }
     
     private func goBackToPrevious() {
-        let index = globalVM.userData.availibility.firstIndex { $0.weekDay == selectedDay.weekDay }
+        let index = userDataVM.userData.availibility.firstIndex { $0.weekDay == selectedDay.weekDay }
         if let currentIndex = index, currentIndex > 0 {
-            selectedDay = globalVM.userData.availibility[currentIndex - 1]
+            selectedDay = userDataVM.userData.availibility[currentIndex - 1]
             updateSelectedTimeFromAvailability()
         } else {
             pageCounter -= 1
@@ -183,13 +186,22 @@ struct ThirdView: View {
     }
     
     private func goToNext() async {
-        let index = globalVM.userData.availibility.firstIndex { $0.weekDay == selectedDay.weekDay }
-        if let currentIndex = index, currentIndex < globalVM.userData.availibility.count - 1 {
-            selectedDay = globalVM.userData.availibility[currentIndex + 1]
+        let index = userDataVM.userData.availibility.firstIndex { $0.weekDay == selectedDay.weekDay }
+        if let currentIndex = index, currentIndex < userDataVM.userData.availibility.count - 1 {
+            selectedDay = userDataVM.userData.availibility[currentIndex + 1]
             updateSelectedTimeFromAvailability()
         } else {
-            await globalVM.saveUserData()
+            await createAccount()
             isFirstLaunch = false
         }
+    }
+    
+    private func createAccount() async {
+        userDataVM.createUserData(userSession: userSessionVM.userSession)
+        planVM.createPlans(userData: userDataVM.userData)
+        HealthKitService.shared.setup()
+        await Task {
+            await planVM.savePlans(userSession: userSessionVM.userSession)
+        }.value
     }
 }

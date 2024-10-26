@@ -2,7 +2,7 @@
 //  BMIModel.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 15.10.2024.
+//  Created by Naukanova Nuraiym on 15.10.2024.
 //
 
 import Foundation

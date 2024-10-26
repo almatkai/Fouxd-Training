@@ -2,17 +2,19 @@
 //  UDPlan.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 21.10.2024.
+//  Created by Naukanova Nuraiym on 21.10.2024.
 //
 
 import Foundation
 
 // MARK: - UserDefaults Manager
 final class UDPlan {
+    
     static let shared = UDPlan()
     private let defaults = UserDefaults.standard
     private let planKey = "plans"
     
+    // MARK: - Private Init
     private init() {}
     
     func savePlan(_ plan: WeeklyTrainingPlan) throws {

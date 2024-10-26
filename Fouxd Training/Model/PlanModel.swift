@@ -2,7 +2,7 @@
 //  PlanModel.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 15.10.2024.
+//  Created by Naukanova Nuraiym on 15.10.2024.
 //
 
 import Foundation
@@ -20,7 +20,8 @@ struct Plan: Identifiable, Codable {
     let lastUpdated: Date
 }
 
-struct ExerciseSession: Codable, Hashable {
+struct ExerciseSession: Codable, Hashable, Identifiable {
+    var id: UUID = UUID()
     let exerciseWrapper: ExerciseWrapper
     let configuration: ExerciseConfiguration
 }
@@ -38,17 +39,18 @@ enum ActivityLevel: String, Codable {
     
     var baseReps: Int {
         switch self {
-        case .sedentary: return 30
+        case .sedentary: return 6 // Test 7 seconds
         case .light: return 60
-        case .moderate: return 90
-        case .active: return 90
+        case .moderate: return 80
+        case .active: return 80
         }
     }
     
     var sets: Int {
         switch self {
+        case .sedentary: return 1
         case .light: return 2
-        case .sedentary, .moderate: return 3
+        case .moderate: return 3
         case .active: return 4
         }
     }
@@ -91,6 +93,7 @@ enum ExerciseWrapper: Codable, Equatable, Hashable {
 protocol Exercise {
     var title: String { get }
     var description: String { get }
+    var gifName: String { get }
 }
 
 // MARK: - Exercise Categories
@@ -109,83 +112,140 @@ enum ExerciseCategory: String, CaseIterable, Codable {
 
 // MARK: - Exercise Types
 enum UpperBodyExercise: String, Exercise, CaseIterable, Codable {
-    case pushUps, tricepDips
-    case diamondPushUps, pikePushUps, inclinePushUps
-    case declinePushUps, wallPushUps
     
-    var title: String { rawValue.capitalized }
+    case pushUps = "Push-Ups"
+    case tricepDips = "Tricep Dips"
+    case hinduPushUps = "Hindu Push-Ups"
+    case pikePushUps = "Pike Push-Ups"
+    case squatWithOverheadTricep = "Squat With Overhead Tricep"
+    
+    var title: String { rawValue }
+    
     var description: String {
         switch self {
         case .pushUps: return "Classic push-ups targeting chest, shoulders, and triceps"
         case .tricepDips: return "Tricep dips targeting arm strength"
-        case .diamondPushUps: return "Push-ups with hands forming diamond shape for triceps focus"
+        case .hinduPushUps: return "Push-ups with hands forming diamond shape for triceps focus"
         case .pikePushUps: return "Push-ups in pike position targeting shoulders"
-        case .inclinePushUps: return "Push-ups with hands elevated for beginners"
-        case .declinePushUps: return "Push-ups with feet elevated for advanced chest workout"
-        case .wallPushUps: return "Push-ups against wall for beginners or warm-up"
+        case .squatWithOverheadTricep: return "Push-ups with feet elevated for advanced chest workout"
+        }
+    }
+    
+    var gifName: String {
+        switch self {
+        case .pushUps: return "push-ups"
+        case .tricepDips: return "tricep-dips"
+        case .hinduPushUps: return "hindu-push-ups"
+        case .pikePushUps: return "pike-push-ups"
+        case .squatWithOverheadTricep: return "squatWithOverheadTricep"
         }
     }
 }
 
 enum LowerBodyExercise: String, Exercise, CaseIterable, Codable {
-    case squats, lunges, wallSit, gluteBridge
-    case jumpSquats, bulgarianSplitSquat, calfRaises
-    case pistolSquats, stepUps
+    case highKnees = "High Knees"
+    case heisman = "Heisman"
+    case jumpStart = "Jump Start"
+    case jumpSquats = "Jump Squats"
+    case bulgarianSplitSquat = "Bulgarian Split Squat"
+    case ankleHops = "Ankle Hops"
+    case shrimpSquat = "Shrimp Squats"
+    case singleLegSquatKickback = "Step Ups"
     
-    var title: String { rawValue.capitalized }
+    var title: String { rawValue }
+    
     var description: String {
         switch self {
-        case .squats: return "Basic squats for leg strength"
-        case .lunges: return "Forward lunges targeting legs and balance"
-        case .wallSit: return "Static wall sit for endurance"
-        case .gluteBridge: return "Glute bridge for lower back and hip strength"
+        case .highKnees: return "Basic high Knees for leg strength"
+        case .heisman: return "Forward lunges targeting legs and balance"
+        case .jumpStart: return "Static wall sit for endurance" //
         case .jumpSquats: return "Explosive squat jumps for power and cardio"
         case .bulgarianSplitSquat: return "Single-leg squats with rear foot elevated"
-        case .calfRaises: return "Standing calf raises for lower leg strength"
-        case .pistolSquats: return "Single-leg squats for advanced strength and balance"
-        case .stepUps: return "Step-ups onto elevated platform for leg power"
+        case .ankleHops: return "Standing calf raises for lower leg strength" //
+        case .shrimpSquat: return "Single-leg squats for advanced strength and balance" //
+        case .singleLegSquatKickback: return "Step-ups onto elevated platform for leg power" //
+        }
+    }
+    
+    var gifName: String {
+        switch self {
+        case .highKnees: return "highKnees" //
+        case .heisman: return "heisman" //
+        case .jumpStart: return "jumpStart" //
+        case .jumpSquats: return "jump-squats" //
+        case .bulgarianSplitSquat: return "bulgarian-split-squat" //
+        case .ankleHops: return "calf-raises" //
+        case .shrimpSquat: return "shrimpSquat" //
+        case .singleLegSquatKickback: return "singleLegSquatKickback" //
         }
     }
 }
 
 enum CoreExercise: String, Exercise, CaseIterable, Codable {
-    case plank, sitUps, legRaises, bicycleCrunches
-    case sidePlank, russianTwist, mountainClimbers
-    case deadBug, hollowHold
+    case plank = "Plank"
+    case sitUps = "Sit-Ups"
+    case reversePlankLegRaises = "Reverse Plank Leg Raises"
+    case bicycleCrunches = "Bicycle Crunches"
+    case sidePlankRotation = "Side Plank Rotation"
+    case russianTwist = "Russian Twist"
+    case mountainClimbers = "Mountain Climbers"
+    case singleLegBridge = "Single Leg Bridge"
     
-    var title: String { rawValue.capitalized }
+    var title: String { rawValue }
+    
     var description: String {
         switch self {
         case .plank: return "Static plank hold for core stability"
         case .sitUps: return "Basic sit-ups targeting abdominal muscles"
-        case .legRaises: return "Lying leg raises for lower abs"
+        case .reversePlankLegRaises: return "Reverse Plank Leg Raises" //
         case .bicycleCrunches: return "Bicycle crunches for obliques and core"
-        case .sidePlank: return "Side plank for obliques and lateral core stability"
+        case .sidePlankRotation: return "Side plank with rotation for obliques and lateral core stability"
         case .russianTwist: return "Seated twists for rotational core strength"
         case .mountainClimbers: return "Dynamic plank with alternating knee drives"
-        case .deadBug: return "Coordinated arm and leg movements for core control"
-        case .hollowHold: return "Static hollow body hold for advanced core strength"
+        case .singleLegBridge: return "Coordinated arm and leg movements for core control"
+        }
+    }
+    
+    var gifName: String {
+        switch self {
+        case .plank: return "plank" //
+        case .sitUps: return "bicycleCrunches"//
+        case .reversePlankLegRaises: return "reversePlankLegRaises" //
+        case .bicycleCrunches: return "bicycleCrunches" //
+        case .sidePlankRotation: return "sidePlankRotation" //
+        case .russianTwist: return "russianTwist" //
+        case .mountainClimbers: return "mountainClimbers"
+        case .singleLegBridge: return "singleLegBridge"//
         }
     }
 }
 
 enum FullBodyExercise: String, Exercise, CaseIterable, Codable {
-    case burpees, mountainClimbers, jumpingJacks, highKnees
-    case bearCrawl, inchworm, turkishGetUp
-    case manMakers, thruster
+    case rollOver = "Roll Over"
+    case lungePunch = "Lunge Punch"
+    case jumpRope = "Jump Rope"
+    case inchworm = "Inchworm"
+    case sideLungeToLeg = "Side Lunge To Leg"
     
-    var title: String { rawValue.capitalized }
+    var title: String { rawValue }
+
     var description: String {
         switch self {
-        case .burpees: return "Full body burpees for cardio and strength"
-        case .mountainClimbers: return "Mountain climbers for cardio and core"
-        case .jumpingJacks: return "Classic jumping jacks for cardio"
-        case .highKnees: return "High knees running in place"
-        case .bearCrawl: return "Quadrupedal movement pattern for full body coordination"
+        case .rollOver: return "Lie on back, roll over to stand up for mobility"
+        case .lungePunch: return "Lunges with punch for leg and core strength"
+        case .jumpRope: return "Jump rope for cardio and coordination"
         case .inchworm: return "Walking hands out to plank and back for mobility"
-        case .turkishGetUp: return "Complex movement from floor to standing position"
-        case .manMakers: return "Combination of push-up, row, and squat thrust"
-        case .thruster: return "Squat to overhead press movement pattern"
+        case .sideLungeToLeg: return "Lateral lunge with leg lift for balance and strength"
+        }
+    }
+    
+    var gifName: String {
+        switch self {
+        case .rollOver: return "rollOver" //
+        case .lungePunch: return "lungePunch" //
+        case .jumpRope: return "jumpRope" //
+        case .inchworm: return "inchworm" //
+        case .sideLungeToLeg: return "SideLungeToLeg" //
         }
     }
 }

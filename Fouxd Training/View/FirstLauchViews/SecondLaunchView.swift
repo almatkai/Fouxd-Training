@@ -2,13 +2,13 @@
 //  SecondLaunchView.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 20.10.2024.
+//  Created by Naukanova Nuraiym on 20.10.2024.
 //
 
 import SwiftUI
 
 struct SecondLaunchView: View {
-    @EnvironmentObject private var globalVM: GlobalVM
+    @EnvironmentObject private var userDataVM: UserDataViewModel
     @Binding var pageCounter: Int
     
     @State var pickerType: PickerType = .weight
@@ -23,7 +23,7 @@ struct SecondLaunchView: View {
                 Image("second_screen")
                     .resizable()
                     .scaledToFit()
-                    .offset(y: -globalVM.screenHeight * 0.05)
+                    .offset(y: -height() * 0.05)
                     .mask(
                         LinearGradient(gradient: Gradient(colors: [Color.black, Color.black.opacity(0)]), startPoint: .top, endPoint: .bottom)
                     )
@@ -39,12 +39,12 @@ struct SecondLaunchView: View {
                             buttonWithBackground(for: type)
                         }
                     }
-                    .frame(width: globalVM.screenWidth * 0.58)
+                    .frame(width: width() * 0.58)
 
                     VStack {
                         Spacer()
                         pickerView()
-                            .frame(width: globalVM.screenWidth * 0.34)
+                            .frame(width: width() * 0.34)
                     }
                 }.padding(32)
                 
@@ -55,13 +55,7 @@ struct SecondLaunchView: View {
         }
     }
     
-    enum PickerType: String, CaseIterable {
-        case weight = "Weight"
-        case height = "Height"
-        case age = "Age"
-        case gender = "Gender"
-        case activityLevel = "Activity Level"
-    }
+    
     
     private func buttonWithBackground(for type: PickerType) -> some View {
         ZStack(alignment: .leading) {
@@ -97,15 +91,15 @@ struct SecondLaunchView: View {
     private func buttonText(for type: PickerType) -> String {
         switch type {
         case .weight:
-            return String(format: "Weight: %.1f kg", globalVM.userData.weight)
+            return String(format: "Weight: %.1f kg", userDataVM.userData.weight)
         case .height:
-            return "Height: \(Int(globalVM.userData.height)) cm"
+            return "Height: \(Int(userDataVM.userData.height)) cm"
         case .age:
-            return "Age: \(globalVM.userData.age) years"
+            return "Age: \(userDataVM.userData.age) years"
         case .gender:
-            return "Gender: \(globalVM.userData.gender == .male ? "Male" : globalVM.userData.gender == .female ? "Female" : "Other")"
+            return "Gender: \(userDataVM.userData.gender == .male ? "Male" : userDataVM.userData.gender == .female ? "Female" : "Other")"
         case .activityLevel:
-            return "Activity Level: \(globalVM.userData.activityLevel)"
+            return "Activity Level: \(userDataVM.userData.activityLevel)"
         }
     }
     
@@ -113,7 +107,7 @@ struct SecondLaunchView: View {
         Group {
             switch pickerType {
             case .weight:
-                Picker("Weight", selection: $globalVM.userData.weight) {
+                Picker("Weight", selection: $userDataVM.userData.weight) {
                     ForEach(Array(stride(from: 10, to: 300, by: 0.5)), id: \.self) { weight in
                         Text("\(String(format: weight.truncatingRemainder(dividingBy: 1) == 0 ? "%.0f" : "%.1f", weight)) kg")
                             .tag(Double(weight))
@@ -121,25 +115,25 @@ struct SecondLaunchView: View {
                     }
                 }
             case .height:
-                Picker("Height", selection: $globalVM.userData.height) {
+                Picker("Height", selection: $userDataVM.userData.height) {
                     ForEach(100...250, id: \.self) { height in
                         Text("\(height) cm").tag(Double(height)).font(.callout)
                     }
                 }
             case .age:
-                Picker("Age", selection: $globalVM.userData.age) {
+                Picker("Age", selection: $userDataVM.userData.age) {
                     ForEach(1...100, id: \.self) { age in
                         Text("\(age) years").tag(age).font(.callout)
                     }
                 }
             case .gender:
-                Picker("Gender", selection: $globalVM.userData.gender) {
+                Picker("Gender", selection: $userDataVM.userData.gender) {
                     Text("Male").tag(Gender.male).font(.callout)
                     Text("Female").tag(Gender.female).font(.callout)
                     Text("Other").tag(Gender.other).font(.callout)
                 }
             case .activityLevel:
-                Picker("Activity Level", selection: $globalVM.userData.activityLevel) {
+                Picker("Activity Level", selection: $userDataVM.userData.activityLevel) {
                     Text("Sedentary").tag(ActivityLevel.sedentary).font(.callout)
                     Text("Light").tag(ActivityLevel.light).font(.callout)
                     Text("Moderate").tag(ActivityLevel.moderate).font(.callout)
@@ -155,11 +149,11 @@ struct SecondLaunchView: View {
         HStack {
             NavigationButton(action: {
                 goBackToPreviousPickerType()
-            }, imageName: "chevron.left.circle.fill", width: globalVM.screenWidth * 0.4)
+            }, imageName: "chevron.left.circle.fill", width: width() * 0.4)
             Spacer()
             NavigationButton(action: {
                 goToNextPickerType()
-            }, imageName: "chevron.right.circle.fill", width: globalVM.screenWidth * 0.4)
+            }, imageName: "chevron.right.circle.fill", width: width() * 0.4)
         }
     }
         

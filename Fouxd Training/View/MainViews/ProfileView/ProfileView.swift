@@ -2,7 +2,7 @@
 //  ProfileView.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 17.10.2024.
+//  Created by Naukanova Nuraiym on 17.10.2024.
 //
 
 import SwiftUI
@@ -10,16 +10,19 @@ import FirebaseAuth
 
 
 struct ProfileView: View {
-    @EnvironmentObject private var globalVM: GlobalVM
+    @EnvironmentObject var userSessionVM: UserSessionViewModel
+    @EnvironmentObject var userDataVM: UserDataViewModel
+    @EnvironmentObject var planVM: PlanViewModel
     
     @State private var showSettings = false
     @StateObject private var authViewModel = AuthenticationViewModel()
+    @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true
     
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    if let googleUser = globalVM.userSession {
+                    if let googleUser = userSessionVM.userSession {
                         // Google User Profile
                         googleUserProfile(user: googleUser)
                     } else {
@@ -38,7 +41,10 @@ struct ProfileView: View {
                                 .cornerRadius(10)
                         }
                         
-                        Button(action: { showSettings.toggle() }) {
+                        Button(action: {
+                            showSettings.toggle()
+                            vibrate()
+                        }) {
                             Label("Settings", systemImage: "gear")
                                 .frame(maxWidth: .infinity)
                                 .padding()
@@ -67,16 +73,19 @@ struct ProfileView: View {
                         }
                     }.padding(.horizontal)
                     
-                    if (globalVM.userSession == nil) {
+                    if (userSessionVM.userSession == nil) {
                         GoogleSingInButton(action: {
                             Task {
-                                await singInAction()
+                                await signInAction()
                             }
                         })
                     } else {
                         Button(action: {
                             authViewModel.logOut()
-                            globalVM.refreshUser()
+                            userSessionVM.refreshUser()
+                            userDataVM.userData = UserData()
+                            planVM.plans = []
+                            isFirstLaunch = true
                         }){
                             HStack {
                                 HStack {
@@ -84,7 +93,7 @@ struct ProfileView: View {
                                 }
                                 .padding()
                             }
-                            .classicButton(screenWidth: globalVM.screenWidth)
+                            .classicButton(screenWidth: width())
                             .padding(32)
                         }
                     }
@@ -92,6 +101,12 @@ struct ProfileView: View {
                 }
             }
         }
+    }
+    
+    private func enterAccount() async {
+        await userDataVM.checkAndCreateData(userId: userSessionVM.userSession?.uid ?? "")
+        await planVM.checkAndCreatePlans(userData: userDataVM.userData, userId: userSessionVM.userSession?.uid ?? "")
+        userSessionVM.refreshUser()
     }
     
     // Google User Profile View
@@ -120,9 +135,9 @@ struct ProfileView: View {
                 .foregroundColor(.gray)
             
             StatsView(
-                weight: String(globalVM.userData.weight),
-                height: String(globalVM.userData.height),
-                activityLevel: globalVM.userData.activityLevel.rawValue)
+                weight: String(userDataVM.userData.weight),
+                height: String(userDataVM.userData.height),
+                activityLevel: userDataVM.userData.activityLevel.rawValue)
         }
         .padding(.top, 20)
     }
@@ -138,32 +153,46 @@ struct ProfileView: View {
                 .shadow(radius: 5)
             
             StatsView(
-                weight: "\(globalVM.userData.weight)",
-                height: "\(globalVM.userData.height)",
-                activityLevel: "\(globalVM.userData.activityLevel)"
+                weight: "\(userDataVM.userData.weight)",
+                height: "\(userDataVM.userData.height)",
+                activityLevel: "\(userDataVM.userData.activityLevel)"
             )
         }
         .padding(.top, 20)
     }
     
-    private func  singInAction() async {
-        if globalVM.userSession == nil {
-            await authViewModel.signInWithGoogle { _ in
-                globalVM.refreshUser()
-                guard let userSession = globalVM.userSession else { return }
-                FBMUserData.shared.fetchUserData(uid: userSession.uid, completion: { res in
-                    switch res {
-                    case .success(let userData):
-                        globalVM.userData = userData
-                    case .failure(_):
-                        FBMUserData.shared.createUserData(uid: userSession.uid, data: globalVM.userData)
-                    }
-                })
+    private func signInAction() async {
+        if userSessionVM.userSession == nil {
+            await authViewModel.signInWithGoogle(completion: {_ in})
+            userSessionVM.refreshUser()
+
+            guard let userSession = userSessionVM.userSession else { return }
+
+            let result = await withCheckedContinuation { continuation in
+                FBMUserData.shared.fetchUserData(uid: userSession.uid) { res in
+                    continuation.resume(returning: res)
+                }
+            }
+
+            switch result {
+            case .success(let userData):
+                userDataVM.userData = userData
+            case .failure(_):
+                await createAccount()
             }
         } else {
             authViewModel.logOut()
         }
-        globalVM.refreshUser()
+        userSessionVM.refreshUser()
+    }
+
+    private func createAccount() async {
+        userDataVM.createUserData(userSession: userSessionVM.userSession)
+        planVM.createPlans(userData: userDataVM.userData)
+        HealthKitService.shared.setup()
+        await Task {
+            await planVM.savePlans(userSession: userSessionVM.userSession)
+        }.value
     }
 }
 
@@ -178,7 +207,6 @@ struct StatsView: View {
             StatItem(value: height, title: "Height")
             StatItem(value: activityLevel, title: "Activity Level")
         }
-        .padding(.vertical)
     }
 }
 
@@ -195,6 +223,25 @@ struct StatItem: View {
                 .font(.caption)
                 .foregroundColor(.gray)
         }
+    }
+}
+
+struct EditButton: View {
+    @Binding var isEditing: Bool
+    var body: some View {
+        Button(action: {
+            withAnimation{
+                isEditing.toggle()
+            }
+            vibrate()
+        }){
+            Image(systemName: "square.and.pencil")
+                .resizable()
+                .scaledToFit()
+                .frame(width: 30)
+                .foregroundColor(.blue)
+        }
+        .padding(.bottom, 10)
     }
 }
 

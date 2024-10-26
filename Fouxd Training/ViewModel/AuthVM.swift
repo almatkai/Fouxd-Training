@@ -2,7 +2,7 @@
 //  AuthVM.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 16.10.2024.
+//  Created by Naukanova Nuraiym on 16.10.2024.
 //
 
 import Foundation
@@ -21,7 +21,7 @@ final class AuthenticationViewModel: ObservableObject {
     func setup() {
         self.userSession = Auth.auth().currentUser
         
-        if let firebaseUser = self.userSession {
+        if self.userSession != nil {
             if GIDSignIn.sharedInstance.hasPreviousSignIn() {
                 GIDSignIn.sharedInstance.restorePreviousSignIn(completion: { (user, error) in
                     if let error = error {
