@@ -44,13 +44,13 @@ class WorkoutHistoryViewModel: ObservableObject {
         calculateWeeklyCompletion()
     }
     
-    func fetchWorkoutHistory(userId: String?) async {
+    func fetchWorkoutHistory(userId: String?) {
         if let userId = userId {
             do {
-                let tempWorkoutHistory = try await FBMWorkoutHistory.shared.readAll(userId: userId)
-                DispatchQueue.main.async { [weak self] in
-                    self?.workoutHistory = tempWorkoutHistory
-                }
+//                let tempWorkoutHistory = try await FBMWorkoutHistory.shared.readAll(userId: userId)
+//                DispatchQueue.main.async { [weak self] in
+//                    self?.workoutHistory = tempWorkoutHistory
+//                }
             } catch {
                 print("Failed to fetch workout history FBM: \(error.localizedDescription)")
             }

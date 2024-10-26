@@ -25,8 +25,8 @@ class TimerSoundManager {
         }
     }
     
-    func playCountdownSound(forSecond second: Int) {
-        guard let soundURL = Bundle.main.url(forResource: "countdown_beep", withExtension: "wav") else {
+    func playCountdownSound(forSecond second: Int, whichSound fileName: String) {
+        guard let soundURL = Bundle.main.url(forResource: fileName, withExtension: "mp3") else {
             print("Sound file not found")
             return
         }
