@@ -26,19 +26,15 @@ class WorkoutHistoryViewModel: ObservableObject {
         weeklyCompletion = (Double(completedWorkouts) / 7.0) * 100
     }
     
-    func addWorkoutHistory(_ history: WorkoutHistory) async {
+    func addWorkoutHistory(_ history: WorkoutHistory) {
         workoutHistory.insert(history, at: 0)
-        if history.user_id != nil {
-            do {
-                try await FBMWorkoutHistory.shared.create(history: history)
-            } catch {
-                print("Failed to add workout history FBM: \(error.localizedDescription)")
-            }
+        if let userId = history.user_id {
+            FBMWorkoutHistory.shared.create(history: history) { _ in }
         } else {
             do {
                 try UDWorkoutHistory.shared.create(history: history)
             } catch {
-                print("Failed to add workout history FBM: \(error.localizedDescription)")
+                print("Failed to add workout history UD: \(error.localizedDescription)")
             }
         }
         calculateWeeklyCompletion()
@@ -46,16 +42,23 @@ class WorkoutHistoryViewModel: ObservableObject {
     
     func fetchWorkoutHistory(userId: String?) {
         if let userId = userId {
-            do {
-//                let tempWorkoutHistory = try await FBMWorkoutHistory.shared.readAll(userId: userId)
-//                DispatchQueue.main.async { [weak self] in
-//                    self?.workoutHistory = tempWorkoutHistory
-//                }
-            } catch {
-                print("Failed to fetch workout history FBM: \(error.localizedDescription)")
+            FBMWorkoutHistory.shared.readAll(userId: userId) { result in
+                switch result {
+                case .success(let workoutHistory):
+                    DispatchQueue.main.async { [weak self] in
+                        self?.workoutHistory = workoutHistory
+                    }
+                case .failure(let error):
+                    DispatchQueue.main.async {
+                        print("Failed to fetch workout history FBM: \(error.localizedDescription)")
+                    }
+                }
             }
         } else {
-            workoutHistory = UDWorkoutHistory.shared.readAll()
+            let workoutHistory = UDWorkoutHistory.shared.readAll()
+            DispatchQueue.main.async { [weak self] in
+                self?.workoutHistory = workoutHistory
+            }
         }
     }
 }
@@ -117,7 +120,7 @@ struct WorkoutHistoryCard: View {
         }
         .padding()
         .background(Color(.systemBackground))
-        .cornerRadius(10)
+        .cornerRadius(22)
         .shadow(radius: 2)
     }
     

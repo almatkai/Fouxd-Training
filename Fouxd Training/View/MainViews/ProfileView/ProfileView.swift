@@ -38,7 +38,7 @@ struct ProfileView: View {
                                 .foregroundColor(.white)
                                 .padding()
                                 .background(Color.blue)
-                                .cornerRadius(10)
+                                .cornerRadius(20)
                         }
                         
                         Button(action: {
@@ -49,7 +49,7 @@ struct ProfileView: View {
                                 .frame(maxWidth: .infinity)
                                 .padding()
                                 .background(Color(.systemGray5))
-                                .cornerRadius(10)
+                                .cornerRadius(20)
                         }
                     }
                     .padding(.horizontal)
@@ -189,7 +189,6 @@ struct ProfileView: View {
     private func createAccount() async {
         userDataVM.createUserData(userSession: userSessionVM.userSession)
         planVM.createPlans(userData: userDataVM.userData)
-        HealthKitService.shared.setup()
         await Task {
             await planVM.savePlans(userSession: userSessionVM.userSession)
         }.value
@@ -307,7 +306,7 @@ struct SectionCard<Content: View>: View {
         }
         .padding()
         .background(Color(.systemBackground))
-        .cornerRadius(12)
+        .cornerRadius(22)
         .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
     }
 }

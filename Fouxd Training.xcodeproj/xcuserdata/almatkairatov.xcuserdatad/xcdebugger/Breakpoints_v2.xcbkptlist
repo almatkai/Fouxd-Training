@@ -24,7 +24,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "E4593285-F190-4A7D-BB68-9B1E7D9998F2"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Fouxd Training/View/FirstLauchViews/ThirdLaunchView.swift"
@@ -34,6 +34,36 @@
             endingLineNumber = "189"
             landmarkName = "goToNext()"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "E4593285-F190-4A7D-BB68-9B1E7D9998F2 - 738b01908253a1c9"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Fouxd_Training.ThirdView.goToNext() -&gt; ()"
+                  moduleName = "Fouxd Training.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/almatkairatov/Desktop/GENERAL/Project%20materials/ProgrammingLang/IOS/Fouxd%20Training/Fouxd%20Training/View/FirstLauchViews/ThirdLaunchView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "189"
+                  endingLineNumber = "189">
+               </Location>
+               <Location
+                  uuid = "E4593285-F190-4A7D-BB68-9B1E7D9998F2 - 94c3874025bab1b4"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Fouxd_Training.Availability) -&gt; Swift.Bool in Fouxd_Training.ThirdView.goToNext() -&gt; ()"
+                  moduleName = "Fouxd Training.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/almatkairatov/Desktop/GENERAL/Project%20materials/ProgrammingLang/IOS/Fouxd%20Training/Fouxd%20Training/View/FirstLauchViews/ThirdLaunchView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "189"
+                  endingLineNumber = "189">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

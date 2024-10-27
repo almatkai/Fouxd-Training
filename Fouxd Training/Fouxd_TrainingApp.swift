@@ -33,6 +33,7 @@ struct Fouxd_TrainingApp: App {
                 .environmentObject(userDataViewModel)
                 .environmentObject(userSessionViewModel)
                 .environmentObject(historyVM)
+//                .environment(\.locale, .init(identifier: "kk"))
         }
     }
 }

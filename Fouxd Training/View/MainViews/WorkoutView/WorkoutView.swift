@@ -20,8 +20,6 @@ struct WorkoutView: View {
     var todaysExercises: [ExerciseSession] {
         let today = 7 - Calendar.current.component(.weekday, from: Date())
         let weekDay = WeekDay.allCases[today]
-        print("Hello: ",today)
-        print(weekDay)
         return planVM.plans.first(where: { $0.weekDay == weekDay })?.exercises ?? []
     }
     
@@ -39,9 +37,7 @@ struct WorkoutView: View {
             }
             .navigationTitle("Workout")
             .onAppear {
-                Task {
-                    await historyVM.fetchWorkoutHistory(userId: userSessionVM.userSession?.uid ?? "")
-                }
+                historyVM.fetchWorkoutHistory(userId: userSessionVM.userSession?.uid ?? "")
             }
         }
         .sheet(isPresented: $showingWorkoutSession) {
@@ -49,13 +45,10 @@ struct WorkoutView: View {
                 exercises: todaysExercises,
                 onComplete: { history in
                     Task {
-                        await historyVM.addWorkoutHistory(history)
+                        historyVM.addWorkoutHistory(history)
                     }
                 }
             )
-        }
-        .onAppear {
-            
         }
     }
     
@@ -81,7 +74,7 @@ struct WorkoutView: View {
         }
         .padding()
         .background(Color(.systemBackground))
-        .cornerRadius(15)
+        .cornerRadius(22)
         .shadow(radius: 5)
     }
     
@@ -112,13 +105,13 @@ struct WorkoutView: View {
                         .padding(.horizontal, 30)
                         .padding(.vertical, 12)
                         .background(Color.blue)
-                        .cornerRadius(10)
+                        .cornerRadius(20)
                 }
             }
         }
         .padding()
         .background(Color(.systemBackground))
-        .cornerRadius(15)
+        .cornerRadius(22)
         .shadow(radius: 5)
     }
     
@@ -157,7 +150,7 @@ struct ExerciseCard: View {
         }
         .padding()
         .background(Color(.systemBackground))
-        .cornerRadius(10)
+        .cornerRadius(22)
         .shadow(radius: 2)
     }
 }

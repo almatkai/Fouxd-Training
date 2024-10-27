@@ -9,158 +9,299 @@ import Foundation
 import FirebaseFirestore
 
 class FBMWorkoutHistory {
-    
+
     static let shared = FBMWorkoutHistory()
     // MARK: - Properties
     private let db = Firestore.firestore()
     private let collection = "workout_history"
-    
+
     // MARK: - Private Init
     private init() {}
-    
+
     // MARK: - CRUD Operations
-    
     /// Create a new workout history entry
-    func create(history: WorkoutHistory) async throws {
+    func create(history: WorkoutHistory, completion: @escaping (Result<Void, Error>) -> Void) {
         let document = db.collection(collection).document()
-        try document.setData(from: history)
-    }
-    
-    /// Retrieve a specific workout history entry
-    func read(id: String, userId: String) async throws -> WorkoutHistory? {
-        let document = try await db.collection(collection)
-            .document()
-            .getDocument()
-        
-        let history = try? document.data(as: WorkoutHistory.self)
-        return history?.user_id == userId ? history : nil
-    }
-    
-    /// Retrieve all workout history entries for a specific user
-    func readAll(userId: String) async throws -> [WorkoutHistory] {
-        let snapshot = try await db.collection(collection)
-            .whereField("user_id", isEqualTo: userId)
-            .getDocuments()
-        
-        return snapshot.documents.compactMap { document in
-            try? document.data(as: WorkoutHistory.self)
+        do {
+            try document.setData(from: history) { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        } catch {
+            completion(.failure(error))
         }
     }
-    
+
+    /// Retrieve a specific workout history entry
+    func read(id: String, userId: String, completion: @escaping (Result<WorkoutHistory?, Error>) -> Void) {
+        db.collection(collection).document(id).getDocument { document, error in
+            if let error = error {
+                completion(.failure(error))
+                return
+            }
+
+            guard let document = document else {
+                completion(.success(nil))
+                return
+            }
+
+            do {
+                let history = try document.data(as: WorkoutHistory.self)
+                if history.user_id == userId {
+                    completion(.success(history))
+                } else {
+                    completion(.success(nil))
+                }
+            } catch {
+                completion(.failure(error))
+            }
+        }
+    }
+
+    /// Retrieve all workout history entries for a specific user
+    func readAll(userId: String, completion: @escaping (Result<[WorkoutHistory], Error>) -> Void) {
+        db.collection(collection)
+            .whereField("user_id", isEqualTo: userId)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                do {
+                    let histories = try snapshot?.documents.compactMap { document in
+                        try document.data(as: WorkoutHistory.self)
+                    } ?? []
+                    completion(.success(histories))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+    }
+
     /// Retrieve workout history entries within a date range for a specific user
-    func readRange(from startDate: Date, to endDate: Date, userId: String) async throws -> [WorkoutHistory] {
-        let snapshot = try await db.collection(collection)
+    func readRange(from startDate: Date, to endDate: Date, userId: String, completion: @escaping (Result<[WorkoutHistory], Error>) -> Void) {
+        db.collection(collection)
             .whereField("user_id", isEqualTo: userId)
             .whereField("date", isGreaterThanOrEqualTo: startDate)
             .whereField("date", isLessThanOrEqualTo: endDate)
-            .getDocuments()
-        
-        return snapshot.documents.compactMap { document in
-            try? document.data(as: WorkoutHistory.self)
-        }
-    }
-    
-    /// Update an existing workout history entry
-    func update(id: String, history: WorkoutHistory, userId: String) async throws {
-        // Verify the workout belongs to the user before updating
-        guard let existingHistory = try await read(id: id, userId: userId) else {
-            throw NSError(domain: "FBMWorkoutHistory", code: 403,
-                         userInfo: [NSLocalizedDescriptionKey: "Unauthorized access to workout history"])
-        }
-        
-        try await db.collection(collection).document(id).setData(from: history)
-    }
-    
-    /// Delete a workout history entry
-    func delete(id: String, userId: String) async throws {
-        // Verify the workout belongs to the user before deleting
-        guard let _ = try await read(id: id, userId: userId) else {
-            throw NSError(domain: "FBMWorkoutHistory", code: 403,
-                         userInfo: [NSLocalizedDescriptionKey: "Unauthorized access to workout history"])
-        }
-        
-        try await db.collection(collection).document(id).delete()
-    }
-    
-    /// Delete multiple workout history entries for a specific user
-    func deleteBatch(ids: [String], userId: String) async throws {
-        let batch = db.batch()
-        
-        // Verify all workouts belong to the user before deleting
-        for id in ids {
-            guard let _ = try await read(id: id, userId: userId) else {
-                throw NSError(domain: "FBMWorkoutHistory", code: 403,
-                            userInfo: [NSLocalizedDescriptionKey: "Unauthorized access to workout history"])
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                do {
+                    let histories = try snapshot?.documents.compactMap { document in
+                        try document.data(as: WorkoutHistory.self)
+                    } ?? []
+                    completion(.success(histories))
+                } catch {
+                    completion(.failure(error))
+                }
             }
-            let ref = db.collection(collection).document(id)
-            batch.deleteDocument(ref)
-        }
-        
-        try await batch.commit()
     }
-    
+
+    /// Update an existing workout history entry
+    func update(id: String, history: WorkoutHistory, userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        read(id: id, userId: userId) { result in
+            switch result {
+            case .success(let existingHistory):
+                guard existingHistory != nil else {
+                    completion(.failure(NSError(domain: "FBMWorkoutHistory", code: 403,
+                                               userInfo: [NSLocalizedDescriptionKey: "Unauthorized access to workout history"])))
+                    return
+                }
+
+                do {
+                    try self.db.collection(self.collection).document(id).setData(from: history) { error in
+                        if let error = error {
+                            completion(.failure(error))
+                        } else {
+                            completion(.success(()))
+                        }
+                    }
+                } catch {
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    /// Delete a workout history entry
+    func delete(id: String, userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        read(id: id, userId: userId) { result in
+            switch result {
+            case .success(let existingHistory):
+                guard existingHistory != nil else {
+                    completion(.failure(NSError(domain: "FBMWorkoutHistory", code: 403,
+                                               userInfo: [NSLocalizedDescriptionKey: "Unauthorized access to workout history"])))
+                    return
+                }
+
+                self.db.collection(self.collection).document(id).delete { error in
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(()))
+                    }
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    /// Delete multiple workout history entries for a specific user
+    func deleteBatch(ids: [String], userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        let batch = db.batch()
+        let group = DispatchGroup()
+
+        for id in ids {
+            group.enter()
+            read(id: id, userId: userId) { result in
+                switch result {
+                case .success(let existingHistory):
+                    guard existingHistory != nil else {
+                        completion(.failure(NSError(domain: "FBMWorkoutHistory", code: 403,
+                                                   userInfo: [NSLocalizedDescriptionKey: "Unauthorized access to workout history"])))
+                        return
+                    }
+
+                    let ref = self.db.collection(self.collection).document(id)
+                    batch.deleteDocument(ref)
+                case .failure(let error):
+                    completion(.failure(error))
+                    return
+                }
+                group.leave()
+            }
+        }
+
+        group.notify(queue: .main) {
+            batch.commit { error in
+                if let error = error {
+                    completion(.failure(error))
+                } else {
+                    completion(.success(()))
+                }
+            }
+        }
+    }
+
     /// Delete all workout history entries before a specific date for a user
-    func deleteBeforeDate(_ date: Date, userId: String) async throws {
-        let snapshot = try await db.collection(collection)
+    func deleteBeforeDate(_ date: Date, userId: String, completion: @escaping (Result<Void, Error>) -> Void) {
+        db.collection(collection)
             .whereField("user_id", isEqualTo: userId)
             .whereField("date", isLessThan: date)
-            .getDocuments()
-        
-        let batch = db.batch()
-        snapshot.documents.forEach { document in
-            batch.deleteDocument(document.reference)
-        }
-        
-        try await batch.commit()
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+                
+                let batch = self.db.batch()
+                snapshot?.documents.forEach { document in
+                    batch.deleteDocument(document.reference)
+                }
+                
+                batch.commit { error in
+                    if let error = error {
+                        completion(.failure(error))
+                    } else {
+                        completion(.success(()))
+                    }
+                }
+            }
     }
 }
 
 // MARK: - Query Extensions
 extension FBMWorkoutHistory {
     /// Retrieve completed workout history entries for a specific user
-    func readCompleted(userId: String) async throws -> [WorkoutHistory] {
-        let snapshot = try await db.collection(collection)
+    func readCompleted(userId: String, completion: @escaping (Result<[WorkoutHistory], Error>) -> Void) {
+        db.collection(collection)
             .whereField("user_id", isEqualTo: userId)
             .whereField("isCompleted", isEqualTo: true)
-            .getDocuments()
-        
-        return snapshot.documents.compactMap { document in
-            try? document.data(as: WorkoutHistory.self)
-        }
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                do {
+                    let histories = try snapshot?.documents.compactMap { document in
+                        try document.data(as: WorkoutHistory.self)
+                    } ?? []
+                    completion(.success(histories))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
     }
-    
+
     /// Retrieve incomplete workout history entries for a specific user
-    func readIncomplete(userId: String) async throws -> [WorkoutHistory] {
-        let snapshot = try await db.collection(collection)
+    func readIncomplete(userId: String, completion: @escaping (Result<[WorkoutHistory], Error>) -> Void) {
+        db.collection(collection)
             .whereField("user_id", isEqualTo: userId)
             .whereField("isCompleted", isEqualTo: false)
-            .getDocuments()
-        
-        return snapshot.documents.compactMap { document in
-            try? document.data(as: WorkoutHistory.self)
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                do {
+                    let histories = try snapshot?.documents.compactMap { document in
+                        try document.data(as: WorkoutHistory.self)
+                    } ?? []
+                    completion(.success(histories))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
+    }
+
+    /// Get workout completion statistics for a date range for a specific user
+    func getStatistics(from startDate: Date, to endDate: Date, userId: String, completion: @escaping (Result<(total: Int, completionRate: Double), Error>) -> Void) {
+        readRange(from: startDate, to: endDate, userId: userId) { result in
+            switch result {
+            case .success(let histories):
+                let completed = histories.filter { $0.isCompleted }.count
+                let total = histories.count
+                let completionRate = total > 0 ? Double(completed) / Double(total) * 100 : 0
+                completion(.success((total, completionRate)))
+            case .failure(let error):
+                completion(.failure(error))
+            }
         }
     }
-    
-    /// Get workout completion statistics for a date range for a specific user
-    func getStatistics(from startDate: Date, to endDate: Date, userId: String) async throws -> (total: Int, completionRate: Double) {
-        let histories = try await readRange(from: startDate, to: endDate, userId: userId)
-        let completed = histories.filter { $0.isCompleted }.count
-        let total = histories.count
-        let completionRate = total > 0 ? Double(completed) / Double(total) * 100 : 0
-        
-        return (total, completionRate)
-    }
-    
+
     /// Get latest workout for a specific user
-    func getLatestWorkout(userId: String) async throws -> WorkoutHistory? {
-        let snapshot = try await db.collection(collection)
+    func getLatestWorkout(userId: String, completion: @escaping (Result<WorkoutHistory?, Error>) -> Void) {
+        db.collection(collection)
             .whereField("user_id", isEqualTo: userId)
             .order(by: "date", descending: true)
             .limit(to: 1)
-            .getDocuments()
-        
-        return snapshot.documents.first.flatMap { document in
-            try? document.data(as: WorkoutHistory.self)
-        }
+            .getDocuments { snapshot, error in
+                if let error = error {
+                    completion(.failure(error))
+                    return
+                }
+
+                do {
+                    let history = try snapshot?.documents.first.flatMap { document in
+                        try document.data(as: WorkoutHistory.self)
+                    }
+                    completion(.success(history))
+                } catch {
+                    completion(.failure(error))
+                }
+            }
     }
 }

@@ -147,7 +147,7 @@ struct ThirdView: View {
                 .fontWeight(.bold)
             
             Picker("Minutes", selection: $selectedMinute) {
-                ForEach(Array(stride(from: 0, to: 59, by: 15)), id: \.self) { minute in
+                ForEach(Array(stride(from: 0, to: 59, by: 5)), id: \.self) { minute in
                     Text(String(format: "%02d", minute)).tag(minute)
                 }
             }
@@ -185,13 +185,13 @@ struct ThirdView: View {
         }
     }
     
-    private func goToNext() async {
+    private func goToNext()  {
         let index = userDataVM.userData.availibility.firstIndex { $0.weekDay == selectedDay.weekDay }
         if let currentIndex = index, currentIndex < userDataVM.userData.availibility.count - 1 {
             selectedDay = userDataVM.userData.availibility[currentIndex + 1]
             updateSelectedTimeFromAvailability()
         } else {
-            await createAccount()
+//             createAccount()
             isFirstLaunch = false
         }
     }
@@ -199,7 +199,6 @@ struct ThirdView: View {
     private func createAccount() async {
         userDataVM.createUserData(userSession: userSessionVM.userSession)
         planVM.createPlans(userData: userDataVM.userData)
-        HealthKitService.shared.setup()
         await Task {
             await planVM.savePlans(userSession: userSessionVM.userSession)
         }.value

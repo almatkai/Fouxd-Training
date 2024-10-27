@@ -36,7 +36,6 @@ struct ContentView: View {
         userDataVM.fetchUserData(userSession: userSessionVM.userSession)
         planVM.fetchPlans(userSession: userSessionVM.userSession)
         workoutHistoryVM.fetchWorkoutHistory(userId: userSessionVM.userSession?.uid ?? "")
-        HealthKitService.shared.setup()
     }
 }
 

@@ -1,0 +1,680 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    ":" : {
+
+    },
+    "%@ kg" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ кг"
+          }
+        }
+      }
+    },
+    "%lld" : {
+
+    },
+    "%lld cm" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld см"
+          }
+        }
+      }
+    },
+    "%lld kcal" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ккал"
+          }
+        }
+      }
+    },
+    "%lld reps" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld қайталау"
+          }
+        }
+      }
+    },
+    "%lld sets" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld жиын"
+          }
+        }
+      }
+    },
+    "%lld steps" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld қадам"
+          }
+        }
+      }
+    },
+    "%lld years" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld жыл"
+          }
+        }
+      }
+    },
+    "%lld/%lld exercises" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$lld/%2$lld exercises"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld/%2$lld жаттығу"
+          }
+        }
+      }
+    },
+    "%lld%%" : {
+
+    },
+    "%llds rest" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld секундтық демалыс"
+          }
+        }
+      }
+    },
+    "Active" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Белсенді"
+          }
+        }
+      }
+    },
+    "Active Energy" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Белсенді энергия"
+          }
+        }
+      }
+    },
+    "Activity Level" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Белсенділік деңгейі"
+          }
+        }
+      }
+    },
+    "Age" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жас"
+          }
+        }
+      }
+    },
+    "Are you sure you want to end this workout? Your progress will be saved." : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сіз жаттығуды аяқтағыңыз келетініне сенімдісіз бе? Сіздің жетістігіңіз сақталады."
+          }
+        }
+      }
+    },
+    "Calories" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Калория"
+          }
+        }
+      }
+    },
+    "Cancel" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бас тарту"
+          }
+        }
+      }
+    },
+    "Completed %lld exercises" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld жаттығу орындалды"
+          }
+        }
+      }
+    },
+    "Continue" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жалғастыру"
+          }
+        }
+      }
+    },
+    "Create your timetable" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Кестеңізді құрыңыз"
+          }
+        }
+      }
+    },
+    "Dashboard" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Басты"
+          }
+        }
+      }
+    },
+    "Day" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Күн"
+          }
+        }
+      }
+    },
+    "Duration: %@" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ұзақтығы: %@"
+          }
+        }
+      }
+    },
+    "End" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аяқтау"
+          }
+        }
+      }
+    },
+    "End Workout" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаттығуды аяқтау"
+          }
+        }
+      }
+    },
+    "End Workout?" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаттығуды аяқтау?"
+          }
+        }
+      }
+    },
+    "Exercise plan" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаттығу жоспары"
+          }
+        }
+      }
+    },
+    "Exercises" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаттығулар"
+          }
+        }
+      }
+    },
+    "Female" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Әйел"
+          }
+        }
+      }
+    },
+    "Finish" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Аяқтау"
+          }
+        }
+      }
+    },
+    "Gender" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жыныс"
+          }
+        }
+      }
+    },
+    "Get Ready!" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дайын болыңыз!"
+          }
+        }
+      }
+    },
+    "Height" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бой"
+          }
+        }
+      }
+    },
+    "Hello, World!" : {
+
+    },
+    "Hours" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сағаттар"
+          }
+        }
+      }
+    },
+    "Let's start training!" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаттығуды бастайық!"
+          }
+        }
+      }
+    },
+    "Light" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жеңіл"
+          }
+        }
+      }
+    },
+    "Log in to your personal account to save your progress" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жетістігіңізді сақтау үшін жеке аккаунтыңызға кіріңіз"
+          }
+        }
+      }
+    },
+    "Log out" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шығу"
+          }
+        }
+      }
+    },
+    "Male" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ер"
+          }
+        }
+      }
+    },
+    "Minutes" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Минуттар"
+          }
+        }
+      }
+    },
+    "Moderate" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Орташа"
+          }
+        }
+      }
+    },
+    "of weekly goal" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "апталық мақсат"
+          }
+        }
+      }
+    },
+    "Other" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Басқа"
+          }
+        }
+      }
+    },
+    "Pause" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Үзіліс"
+          }
+        }
+      }
+    },
+    "Plan" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жоспар"
+          }
+        }
+      }
+    },
+    "Prepare for: %@" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қазір істейтін жаттығу: %@ "
+          }
+        }
+      }
+    },
+    "Profile" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Профиль"
+          }
+        }
+      }
+    },
+    "Recent Activities" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Соңғы әрекеттер"
+          }
+        }
+      }
+    },
+    "Reshuffle" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қайта реттеу"
+          }
+        }
+      }
+    },
+    "Rest" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Демалып алыңыз"
+          }
+        }
+      }
+    },
+    "Resume" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жалғастыру"
+          }
+        }
+      }
+    },
+    "Sedentary" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Белсенді емес"
+          }
+        }
+      }
+    },
+    "Select the days and times you're available for training" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаттығу үшін қолайлы күндер мен уақытты таңдаңыз"
+          }
+        }
+      }
+    },
+    "Set %lld of %lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Set %1$lld of %2$lld"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жиын %1$lld ішіндегі %2$lld"
+          }
+        }
+      }
+    },
+    "Settings" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Баптаулар"
+          }
+        }
+      }
+    },
+    "Sign in with Google" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Google арқылы кіру"
+          }
+        }
+      }
+    },
+    "Start" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бастау"
+          }
+        }
+      }
+    },
+    "Steps" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қадамдар"
+          }
+        }
+      }
+    },
+    "Tap to log out" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шығу үшін түртіңіз"
+          }
+        }
+      }
+    },
+    "Today's Workout" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бүгінгі жаттығу"
+          }
+        }
+      }
+    },
+    "Weekly Progress" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Апталық жетістік"
+          }
+        }
+      }
+    },
+    "Weight" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Салмақ"
+          }
+        }
+      }
+    },
+    "Workout" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаттығу"
+          }
+        }
+      }
+    },
+    "Workout Complete!" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаттығу аяқталды!"
+          }
+        }
+      }
+    },
+    "Workout Completion" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаттығуды аяқтау"
+          }
+        }
+      }
+    },
+    "Workout Session" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жаттығу сеансы"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
