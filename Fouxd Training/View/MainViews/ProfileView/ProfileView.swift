@@ -13,94 +13,129 @@ struct ProfileView: View {
     @EnvironmentObject var userSessionVM: UserSessionViewModel
     @EnvironmentObject var userDataVM: UserDataViewModel
     @EnvironmentObject var planVM: PlanViewModel
-    
+    @Environment(\.dismiss) private var dismiss
     @State private var showSettings = false
     @StateObject private var authViewModel = AuthenticationViewModel()
     @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true
     
+    @State var logOut = false
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(spacing: 20) {
-                    if let googleUser = userSessionVM.userSession {
-                        // Google User Profile
-                        googleUserProfile(user: googleUser)
-                    } else {
-                        // Local User Profile
-                        localUserProfile
-                    }
-                    
-                    // Action Buttons
-                    HStack(spacing: 20) {
-                        NavigationLink(destination: EditPlanView()) {
-                            Label("Plan", systemImage: "calendar")
-                                .frame(maxWidth: .infinity)
-                                .foregroundColor(.white)
-                                .padding()
-                                .background(Color.blue)
-                                .cornerRadius(20)
-                        }
-                        
-                        Button(action: {
-                            showSettings.toggle()
-                            vibrate()
-                        }) {
-                            Label("Settings", systemImage: "gear")
-                                .frame(maxWidth: .infinity)
-                                .padding()
-                                .background(Color(.systemGray5))
-                                .cornerRadius(20)
-                        }
-                    }
-                    .padding(.horizontal)
-                    
-                    // Content Sections
-                    VStack(spacing: 15) {
-                        SectionCard(title: "Recent Activity", icon: "clock.fill") {
-                            VStack(alignment: .leading, spacing: 12) {
-                                ActivityRow(icon: "heart.fill", text: "Liked 'Post Title'", time: "2h ago")
-                                ActivityRow(icon: "bookmark.fill", text: "Saved 'Another Post'", time: "5h ago")
-                                ActivityRow(icon: "message.fill", text: "Commented on 'Post'", time: "1d ago")
-                            }
-                        }
-                        
-                        SectionCard(title: "Saved Items", icon: "bookmark.fill") {
-                            VStack(alignment: .leading, spacing: 12) {
-                                SavedItemRow(title: "Saved Post 1", date: "Yesterday")
-                                SavedItemRow(title: "Saved Post 2", date: "2 days ago")
-                                SavedItemRow(title: "Saved Post 3", date: "1 week ago")
-                            }
-                        }
-                    }.padding(.horizontal)
-                    
-                    if (userSessionVM.userSession == nil) {
-                        GoogleSingInButton(action: {
-                            Task {
-                                await signInAction()
-                            }
-                        })
-                    } else {
-                        Button(action: {
-                            authViewModel.logOut()
-                            userSessionVM.refreshUser()
-                            userDataVM.userData = UserData()
-                            planVM.plans = []
-                            isFirstLaunch = true
-                        }){
-                            HStack {
-                                HStack {
-                                    Text("Log out")
+                GeometryReader { geometry in
+                    ZStack {
+                        let scrollOffset = geometry.frame(in: .global).minY
+                        Image("background_circles")
+                            .frame(width: width())
+                            .offset(y: -height() * 0.3 + scrollOffset * 0.4)
+                            .opacity(0.4)
+                        VStack(spacing: 20) {
+                            ZStack {
+                                VStack {
+                                    HStack {
+                                        Spacer()
+                                        Button(action: {
+                                            logOut = true
+                                        }){
+                                            Image(systemName: "door.left.hand.open")
+                                                .resizable()
+                                                .scaledToFit()
+                                                .frame(width: 18)
+                                        }
+                                        .padding()
+                                    }
+                                    Spacer()
                                 }
-                                .padding()
+                                if let googleUser = userSessionVM.userSession {
+                                    // Google User Profile
+                                    googleUserProfile(user: googleUser)
+                                } else {
+                                    // Local User Profile
+                                    localUserProfile
+                                }
                             }
-                            .classicButton(screenWidth: width())
-                            .padding(32)
+                            
+                            // Action Buttons
+                            HStack(spacing: 20) {
+                                NavigationLink(destination: EditPlanView()) {
+                                    Label("Plan", systemImage: "calendar")
+                                        .frame(maxWidth: .infinity)
+                                        .foregroundColor(.white)
+                                        .padding()
+                                        .background {
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [Color(.cGradientBlue1), Color(.cGradientBlue2)]),
+                                                startPoint: .top,
+                                                endPoint: .bottom
+                                            )
+                                        }
+                                        .cornerRadius(20)
+                                }
+                                
+                                Button(action: {
+                                    showSettings.toggle()
+                                    vibrate()
+                                }) {
+                                    Label("Settings", systemImage: "pencil")
+                                        .frame(maxWidth: .infinity)
+                                        .padding()
+                                        .background(
+                                            LinearGradient(
+                                                gradient: Gradient(colors: [Color(.cGradientPurple1), Color(.cGradientPurple2)]),
+                                                startPoint: .topLeading,
+                                                endPoint: .bottomTrailing
+                                            )
+                                            .opacity(0.8)
+                                        )
+                                        .cornerRadius(20)
+                                }
+                            }
+                            .padding(.horizontal)
+                            
+                            // Content Sections
+//                            VStack(spacing: 15) {
+//                                SectionCard(title: "Recent Activity", icon: "clock.fill") {
+//                                    VStack(alignment: .leading, spacing: 12) {
+//                                        ActivityRow(icon: "heart.fill", text: "Liked 'Post Title'", time: "2h ago")
+//                                        ActivityRow(icon: "bookmark.fill", text: "Saved 'Another Post'", time: "5h ago")
+//                                        ActivityRow(icon: "message.fill", text: "Commented on 'Post'", time: "1d ago")
+//                                    }
+//                                }
+//                                
+//                                SectionCard(title: "Saved Items", icon: "bookmark.fill") {
+//                                    VStack(alignment: .leading, spacing: 12) {
+//                                        SavedItemRow(title: "Saved Post 1", date: "Yesterday")
+//                                        SavedItemRow(title: "Saved Post 2", date: "2 days ago")
+//                                        SavedItemRow(title: "Saved Post 3", date: "1 week ago")
+//                                    }
+//                                }
+//                            }.padding(.horizontal)
+                            
+                            VStack {}.padding()
                         }
                     }
-                    VStack {}.padding()
                 }
             }
+            .confirmationDialog(
+                "Log out?",
+                isPresented: $logOut
+            ) {
+                Button("Log Out", role: .destructive) {
+                    authViewModel.logOut()
+                    userSessionVM.refreshUser()
+                    userDataVM.userData = UserData()
+                    planVM.plans = []
+                    isFirstLaunch = true
+                    dismiss()
+                }
+                Button("Cancel", role: .cancel) {
+                    dismiss()
+                }
+            } message: {
+                Text("Are you sure you want to log out?")
+            }
         }
+        .tint(Color("cTintColor"))
     }
     
     private func enterAccount() async {
@@ -132,7 +167,6 @@ struct ProfileView: View {
             
             Text(user.email ?? "")
                 .font(.subheadline)
-                .foregroundColor(.gray)
             
             StatsView(
                 weight: String(userDataVM.userData.weight),
@@ -220,7 +254,6 @@ struct StatItem: View {
                 .fontWeight(.bold)
             Text(title)
                 .font(.caption)
-                .foregroundColor(.gray)
         }
     }
 }

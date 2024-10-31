@@ -26,6 +26,7 @@ struct MainView: View {
                     Label("Profile", systemImage: "person")
                 }
         }
+        .accentColor(Color("cTintColor"))
     }
 }
 

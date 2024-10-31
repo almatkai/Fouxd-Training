@@ -7,9 +7,14 @@
 
 import Foundation
 import FirebaseAuth
+import Combine
 
 class PlanViewModel: ObservableObject {
     @Published var plans: [Plan] = []
+    
+    var plansPublisher: AnyPublisher<[Plan], Never> {
+        $plans.eraseToAnyPublisher()
+    }
     
     func createPlans(userData: UserData) {
         plans = PlanMakerService.shared.createPlan(userData: userData)
@@ -40,13 +45,14 @@ class PlanViewModel: ObservableObject {
         }
     }
 
-    func savePlans(userSession: User?) async {
+    func savePlans(userSession: User?) {
         if let user = userSession {
-            do {
-                try await FBMPlan.shared.savePlan(.init(plans: plans), userId: user.uid)
-                print("Plan saved successfully FB.")
-            } catch {
-                print("Failed to save plan to FB: \(error.localizedDescription)")
+            FBMPlan.shared.savePlan(.init(plans: plans), userId: user.uid) { error in
+                if let error = error {
+                    print("Error saving plan: \(error)")
+                } else {
+                    print("Plan saved successfully")
+                }
             }
         } else {
             do {

@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import FirebaseFirestore
 
 // MARK: - History Models
 struct WorkoutHistory: Identifiable, Codable {
-    let id: UUID
+    @DocumentID var id: String?
     let user_id: String?
     let date: Date
     let duration: TimeInterval

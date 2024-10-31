@@ -6,10 +6,10 @@
 //
 
 import Foundation
-import FirebaseAuth
+import FirebaseFirestore
 
 struct UserData: Codable {
-    var id: UUID = UUID()
+    @DocumentID var id: String?
     var weight: Double = 62
     var height: Int = 175
     var age: Int = 18

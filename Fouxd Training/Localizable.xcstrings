@@ -156,6 +156,9 @@
         }
       }
     },
+    "Are you sure you want to log out?" : {
+
+    },
     "Calories" : {
       "localizations" : {
         "kk" : {
@@ -175,6 +178,9 @@
           }
         }
       }
+    },
+    "Check your nutrition" : {
+
     },
     "Completed %lld exercises" : {
       "localizations" : {
@@ -380,6 +386,7 @@
       }
     },
     "Log out" : {
+      "extractionState" : "stale",
       "localizations" : {
         "kk" : {
           "stringUnit" : {
@@ -388,6 +395,12 @@
           }
         }
       }
+    },
+    "Log Out" : {
+
+    },
+    "Log out?" : {
+
     },
     "Male" : {
       "localizations" : {
@@ -528,6 +541,9 @@
           }
         }
       }
+    },
+    "See" : {
+
     },
     "Select the days and times you're available for training" : {
       "localizations" : {

@@ -18,8 +18,11 @@ struct WorkoutView: View {
     @State private var showingWorkoutSession = false
     
     var todaysExercises: [ExerciseSession] {
-        let today = 7 - Calendar.current.component(.weekday, from: Date())
+        let today = Calendar.current.component(.weekday, from: Date()) - 2
         let weekDay = WeekDay.allCases[today]
+        
+        print(today)
+        print(weekDay.rawValue)
         return planVM.plans.first(where: { $0.weekDay == weekDay })?.exercises ?? []
     }
     
@@ -36,19 +39,19 @@ struct WorkoutView: View {
                 .padding()
             }
             .navigationTitle("Workout")
-            .onAppear {
-                historyVM.fetchWorkoutHistory(userId: userSessionVM.userSession?.uid ?? "")
-            }
         }
         .sheet(isPresented: $showingWorkoutSession) {
             WorkoutSessionView(
                 exercises: todaysExercises,
                 onComplete: { history in
                     Task {
-                        historyVM.addWorkoutHistory(history)
+                        historyVM.addWorkoutHistory(history, planVM.plans)
                     }
                 }
             )
+        }
+        .onAppear {
+            historyVM.calculateWeeklyCompletion(planVM.plans)
         }
     }
     
@@ -57,23 +60,31 @@ struct WorkoutView: View {
             Text("Weekly Progress")
                 .font(.title2)
                 .fontWeight(.bold)
-            
+                .foregroundColor(Color(.white))
             HStack {
                 CircularProgressView(progress: historyVM.weeklyCompletion / 100)
                     .frame(width: 100, height: 100)
+                
+                Spacer()
                 
                 VStack(alignment: .leading, spacing: 8) {
                     Text("\(Int(historyVM.weeklyCompletion))%")
                         .font(.title)
                         .fontWeight(.bold)
+                        .foregroundColor(Color(.white))
                     Text("of weekly goal")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color(.white))
                 }
-                .padding(.leading)
+                Spacer()
             }
         }
-        .padding()
-        .background(Color(.systemBackground))
+        .frame(maxWidth: .infinity)
+        .padding(32)
+        .background {
+            Image("weekly_progress")
+                .frame(maxHeight: .infinity)
+                .opacity(0.7)
+        }
         .cornerRadius(22)
         .shadow(radius: 5)
     }
@@ -98,21 +109,28 @@ struct WorkoutView: View {
                 Button(action: {
                     showingWorkoutSession = true
                     vibrate()
+                    
+                    print("Exercise",todaysExercises.count)
+                    for exercise in todaysExercises {
+                        print(exercise.exerciseWrapper.exercise.title)
+                    }
                 }) {
                     Text("Start")
                         .font(.headline)
                         .foregroundColor(.white)
                         .padding(.horizontal, 30)
                         .padding(.vertical, 12)
-                        .background(Color.blue)
-                        .cornerRadius(20)
+                        .background(Color("cpink-2"))
+                        .cornerRadius(22)
                 }
             }
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background {
+            Image("pink_background")
+                .frame(maxHeight: .infinity)
+        }
         .cornerRadius(22)
-        .shadow(radius: 5)
     }
     
     private var workoutHistorySection: some View {
@@ -149,8 +167,83 @@ struct ExerciseCard: View {
             .foregroundColor(.gray)
         }
         .padding()
-        .background(Color(.systemBackground))
+        .background(Color(.cwhiteAndDarkGray))
         .cornerRadius(22)
         .shadow(radius: 2)
+    }
+}
+
+// MARK: - Supporting Views
+struct CircularProgressView: View {
+    let progress: Double
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .stroke(lineWidth: 10)
+                .opacity(0.3)
+                .foregroundColor(Color(.cGradientPurple2))
+            
+            Circle()
+                .trim(from: 0.0, to: min(progress, 1.0))
+                .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
+                .foregroundColor(.cpink)
+                .rotationEffect(Angle(degrees: 270.0))
+                .animation(.linear, value: progress)
+        }
+    }
+}
+
+struct WorkoutHistoryCard: View {
+    let workout: WorkoutHistory
+    
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 8) {
+                Text(formatDate(workout.date))
+                    .font(.headline)
+                
+                Text("\(workout.exercisesCompleted)/\(workout.totalExercises) exercises")
+                    .font(.subheadline)
+                    .foregroundColor(.gray)
+                
+                Text(formatDuration(workout.duration))
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+            
+            Spacer()
+            
+            VStack(alignment: .trailing) {
+                if workout.isCompleted {
+                    Image(systemName: "checkmark.circle.fill")
+                        .foregroundColor(.green)
+                } else {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.red)
+                }
+                
+                Text("\(Int(workout.completionPercentage))%")
+                    .font(.caption)
+                    .foregroundColor(.gray)
+            }
+        }
+        .padding()
+        .background(Color(.cwhiteAndDarkGray))
+        .cornerRadius(22)
+        .shadow(radius: 2)
+    }
+    
+    private func formatDate(_ date: Date) -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .medium
+        return formatter.string(from: date)
+    }
+    
+    private func formatDuration(_ duration: TimeInterval) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = [.hour, .minute]
+        formatter.unitsStyle = .abbreviated
+        return formatter.string(from: duration) ?? "N/A"
     }
 }

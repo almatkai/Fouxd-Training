@@ -24,7 +24,7 @@ import FirebaseAuth
 //                }){
 //                    Text("RESET")
 //                }
-//                
+//
 //                Button {
 //                    do {
 //                        try Auth.auth().signOut()
@@ -34,7 +34,7 @@ import FirebaseAuth
 //                } label: {
 //                    Text("Log Out")
 //                }
-//                
+//
 //                Button(action: {
 //                    let domain = Bundle.main.bundleIdentifier!
 //                    UserDefaults.standard.removePersistentDomain(forName: domain)
@@ -43,19 +43,19 @@ import FirebaseAuth
 //                }){
 //                    Label("Delete User Default Information", systemImage: "trash")
 //                }
-//                
+//
 //                Button(action: {
 //                    planVM.plans = PlanMakerService.shared.createPlan(userData: userDataVM.userData)
 //                }){
 //                    Label("Add Workout", systemImage: "plus")
 //                }
-//                
+//
 //                Button(action: {
 //                    userSessionVM.refreshUser()
 //                }){
 //                    Label("Refresh User", systemImage: "arrow.clockwise")
 //                }
-//                
+//
 //            }
 //        }
 //    }
@@ -133,7 +133,7 @@ struct DashboardView: View {
                             .frame(minHeight: 300)
                             .padding(.vertical)
                         
-                        
+                        NutriPanel()
                     }
                     .padding()
                 }
@@ -144,6 +144,7 @@ struct DashboardView: View {
             }
             .navigationTitle("Dashboard")
         }
+        .tint(Color("cTintColor"))
     }
 }
 
@@ -203,10 +204,20 @@ struct MetricCard<Content: View>: View {
         }
         .padding()
         .background(
-            RoundedRectangle(cornerRadius: 22)
-                .fill(Color(.systemBackground))
+            VStack{
+                if title == "Steps" {
+                    LinearGradient(
+                        gradient: Gradient(colors: [Color(.cGradientPurple1), Color(.cGradientPurple2)]),
+                        startPoint: .topLeading,
+                        endPoint: .bottomTrailing
+                    )
+                    .clipShape(RoundedRectangle(cornerRadius: 22))
+                } else {
+                    RoundedRectangle(cornerRadius: 22)
+                        .fill(Color(.cpink).opacity(0.6))
+                }
+            }
                 .matchedGeometryEffect(id: "background-\(title)", in: namespace)
-                .shadow(radius: 2)
         )
         .scaleEffect(isExpanded ? 1 : 0.95)
     }

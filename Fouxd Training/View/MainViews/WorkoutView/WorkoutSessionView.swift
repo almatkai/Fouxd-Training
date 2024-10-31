@@ -95,6 +95,7 @@ struct WorkoutSessionView: View {
                 }
             }
         }
+        .tint(Color("cTintColor"))
     }
     
     private var preparationView: some View {
@@ -201,7 +202,6 @@ struct WorkoutSessionView: View {
         let endTime = Date()
         
         let history = WorkoutHistory(
-            id: UUID(),
             user_id: userSessionVM.userSession?.uid,
             date: startTime,
             duration: endTime.timeIntervalSince(startTime),

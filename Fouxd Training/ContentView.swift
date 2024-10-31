@@ -35,7 +35,7 @@ struct ContentView: View {
         userSessionVM.refreshUser()
         userDataVM.fetchUserData(userSession: userSessionVM.userSession)
         planVM.fetchPlans(userSession: userSessionVM.userSession)
-        workoutHistoryVM.fetchWorkoutHistory(userId: userSessionVM.userSession?.uid ?? "")
+        workoutHistoryVM.fetchWorkoutHistory(userId: userSessionVM.userSession?.uid ?? "", planVM.plans)
     }
 }
 

@@ -24,7 +24,13 @@ struct Fouxd_TrainingApp: App {
     @StateObject private var planViewModel = PlanViewModel()
     @StateObject private var userDataViewModel = UserDataViewModel()
     @StateObject private var userSessionViewModel = UserSessionViewModel()
-    @StateObject private var historyVM = WorkoutHistoryViewModel()
+    @StateObject private var historyVM: WorkoutHistoryViewModel
+    
+    init() {
+        let planViewModel = PlanViewModel()
+        _historyVM = StateObject(wrappedValue: WorkoutHistoryViewModel(plansPublisher: planViewModel.plansPublisher))
+        _planViewModel = StateObject(wrappedValue: planViewModel)
+    }
     
     var body: some Scene {
         WindowGroup {

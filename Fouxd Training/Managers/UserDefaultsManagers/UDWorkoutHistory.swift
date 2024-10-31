@@ -44,7 +44,7 @@ class UDWorkoutHistory {
     }
     
     /// Retrieve a specific workout history entry
-    func read(id: UUID) -> WorkoutHistory? {
+    func read(id: String) -> WorkoutHistory? {
         let workouts = getAllWorkouts()
         return workouts.first { $0.id == id }
     }
@@ -61,7 +61,7 @@ class UDWorkoutHistory {
     }
     
     /// Update an existing workout history entry
-    func update(id: UUID, history: WorkoutHistory) throws {
+    func update(id: String, history: WorkoutHistory) throws {
         var workouts = getAllWorkouts()
         guard let index = workouts.firstIndex(where: { $0.id == id }) else {
             throw NSError(domain: "UDWorkoutHistory", code: 404,
@@ -73,16 +73,16 @@ class UDWorkoutHistory {
     }
     
     /// Delete a workout history entry
-    func delete(id: UUID) throws {
+    func delete(id: String) throws {
         var workouts = getAllWorkouts()
         workouts.removeAll { $0.id == id }
         try saveAllWorkouts(workouts)
     }
     
     /// Delete multiple workout history entries
-    func deleteBatch(ids: [UUID]) throws {
+    func deleteBatch(ids: [String]) throws {
         var workouts = getAllWorkouts()
-        workouts.removeAll { ids.contains($0.id) }
+        workouts.removeAll { ids.contains($0.id ?? "") }
         try saveAllWorkouts(workouts)
     }
     

@@ -81,10 +81,11 @@ struct PlanCard: View {
             .padding()
             .background(
                 LinearGradient(
-                    gradient: Gradient(colors: [Color.blue, Color.blue.opacity(0.8)]),
-                    startPoint: .leading,
-                    endPoint: .trailing
+                    gradient: Gradient(colors: [Color(.cGradientBlue1), Color(.cGradientBlue2)]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
                 )
+                .opacity(0.8)
             )
             .onTapGesture {
                 // Slide animation like in List

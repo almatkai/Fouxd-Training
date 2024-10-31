@@ -191,16 +191,14 @@ struct ThirdView: View {
             selectedDay = userDataVM.userData.availibility[currentIndex + 1]
             updateSelectedTimeFromAvailability()
         } else {
-//             createAccount()
+            createAccount()
             isFirstLaunch = false
         }
     }
     
-    private func createAccount() async {
+    private func createAccount() {
         userDataVM.createUserData(userSession: userSessionVM.userSession)
         planVM.createPlans(userData: userDataVM.userData)
-        await Task {
-            await planVM.savePlans(userSession: userSessionVM.userSession)
-        }.value
+        planVM.savePlans(userSession: userSessionVM.userSession)
     }
 }

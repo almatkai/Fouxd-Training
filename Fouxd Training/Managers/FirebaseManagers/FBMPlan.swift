@@ -26,7 +26,13 @@ final class FBMPlan {
         if document.exists {
             return try document.data(as: WeeklyTrainingPlan.self)
         } else {
-            try await savePlan(defaultPlan, userId: userId)
+            savePlan(defaultPlan, userId: userId) { error in
+                if let error = error {
+                    print("Error saving plan: \(error)")
+                } else {
+                    print("Plan saved successfully")
+                }
+            }
             return defaultPlan
         }
     }
@@ -43,9 +49,14 @@ final class FBMPlan {
         }
     }
     
-    func savePlan(_ plan: WeeklyTrainingPlan, userId: String) async throws {
+    func savePlan(_ plan: WeeklyTrainingPlan, userId: String, completion: @escaping (Error?) -> Void) {
         let documentRef = db.collection(planCollection).document(userId)
-        try documentRef.setData(from: plan, merge: true)
+        do {
+            try documentRef.setData(from: plan, merge: true)
+            completion(nil)
+        } catch {
+            completion(error)
+        }
     }
     
     func fetchPlan(userId: String, completion: @escaping (Result<WeeklyTrainingPlan?, Error>) -> Void) {
@@ -68,10 +79,6 @@ final class FBMPlan {
                 completion(.failure(error))
             }
         }
-    }
-    
-    func updatePlan(_ plan: WeeklyTrainingPlan, userId: String) async throws {
-        try await savePlan(plan, userId: userId)
     }
     
     func deletePlan(userId: String) async throws {

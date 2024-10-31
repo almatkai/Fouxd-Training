@@ -6,27 +6,41 @@
 //
 
 import SwiftUI
+import Combine
 
 // MARK: - Workout History View Model
 class WorkoutHistoryViewModel: ObservableObject {
     @Published var workoutHistory: [WorkoutHistory] = []
     @Published var weeklyCompletion: Double = 0
+
+    private var cancellables = Set<AnyCancellable>()
+    private let plansPublisher: AnyPublisher<[Plan], Never>
     
-    init() {
-        calculateWeeklyCompletion()
+    init(plansPublisher: AnyPublisher<[Plan], Never>) {
+        self.plansPublisher = plansPublisher
+        $workoutHistory
+            .combineLatest(plansPublisher)
+            .sink { [weak self] workoutHistory, plans in
+                self?.calculateWeeklyCompletion(plans)
+            }
+            .store(in: &cancellables)
     }
     
-    func calculateWeeklyCompletion() {
+    func calculateWeeklyCompletion(_ plans: [Plan]) {
         let calendar = Calendar.current
-        let oneWeekAgo = calendar.date(byAdding: .day, value: -7, to: Date())!
+        let today = Date()
+        let currentWeekWorkouts = workoutHistory.filter { workout in
+            calendar.isDate(workout.date, equalTo: today, toGranularity: .weekOfYear) &&
+            calendar.isDate(workout.date, equalTo: today, toGranularity: .year)
+        }
         
-        let recentWorkouts = workoutHistory.filter { $0.date >= oneWeekAgo }
-        let completedWorkouts = recentWorkouts.filter { $0.isCompleted }.count
+        let totalCompleted = currentWeekWorkouts.reduce(0) { $0 + $1.exercisesCompleted }
+        let totalPlanned = plans.reduce(0) { $0 + $1.exercises.count }
         
-        weeklyCompletion = (Double(completedWorkouts) / 7.0) * 100
+        weeklyCompletion = totalPlanned > 0 ? min((Double(totalCompleted) / Double(totalPlanned)) * 100, 100) : 0
     }
     
-    func addWorkoutHistory(_ history: WorkoutHistory) {
+    func addWorkoutHistory(_ history: WorkoutHistory, _ plans: [Plan]) {
         workoutHistory.insert(history, at: 0)
         if let userId = history.user_id {
             FBMWorkoutHistory.shared.create(history: history) { _ in }
@@ -37,10 +51,9 @@ class WorkoutHistoryViewModel: ObservableObject {
                 print("Failed to add workout history UD: \(error.localizedDescription)")
             }
         }
-        calculateWeeklyCompletion()
     }
     
-    func fetchWorkoutHistory(userId: String?) {
+    func fetchWorkoutHistory(userId: String?, _ plans: [Plan]) {
         if let userId = userId {
             FBMWorkoutHistory.shared.readAll(userId: userId) { result in
                 switch result {
@@ -60,80 +73,5 @@ class WorkoutHistoryViewModel: ObservableObject {
                 self?.workoutHistory = workoutHistory
             }
         }
-    }
-}
-
-// MARK: - Supporting Views
-struct CircularProgressView: View {
-    let progress: Double
-    
-    var body: some View {
-        ZStack {
-            Circle()
-                .stroke(lineWidth: 10)
-                .opacity(0.3)
-                .foregroundColor(.gray)
-            
-            Circle()
-                .trim(from: 0.0, to: min(progress, 1.0))
-                .stroke(style: StrokeStyle(lineWidth: 10, lineCap: .round, lineJoin: .round))
-                .foregroundColor(.blue)
-                .rotationEffect(Angle(degrees: 270.0))
-                .animation(.linear, value: progress)
-        }
-    }
-}
-
-struct WorkoutHistoryCard: View {
-    let workout: WorkoutHistory
-    
-    var body: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 8) {
-                Text(formatDate(workout.date))
-                    .font(.headline)
-                
-                Text("\(workout.exercisesCompleted)/\(workout.totalExercises) exercises")
-                    .font(.subheadline)
-                    .foregroundColor(.gray)
-                
-                Text(formatDuration(workout.duration))
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            }
-            
-            Spacer()
-            
-            VStack(alignment: .trailing) {
-                if workout.isCompleted {
-                    Image(systemName: "checkmark.circle.fill")
-                        .foregroundColor(.green)
-                } else {
-                    Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.red)
-                }
-                
-                Text("\(Int(workout.completionPercentage))%")
-                    .font(.caption)
-                    .foregroundColor(.gray)
-            }
-        }
-        .padding()
-        .background(Color(.systemBackground))
-        .cornerRadius(22)
-        .shadow(radius: 2)
-    }
-    
-    private func formatDate(_ date: Date) -> String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        return formatter.string(from: date)
-    }
-    
-    private func formatDuration(_ duration: TimeInterval) -> String {
-        let formatter = DateComponentsFormatter()
-        formatter.allowedUnits = [.hour, .minute]
-        formatter.unitsStyle = .abbreviated
-        return formatter.string(from: duration) ?? "N/A"
     }
 }
