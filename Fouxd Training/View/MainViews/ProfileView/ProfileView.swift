@@ -103,6 +103,7 @@ struct ProfileView: View {
                                 LanguageChangerView()
                                 ThemingChangerView()
                                 AboutUsView()
+                                PrivacyPolicyView()
                             }
                             .padding()
                             .background(Color(.systemBackground))
