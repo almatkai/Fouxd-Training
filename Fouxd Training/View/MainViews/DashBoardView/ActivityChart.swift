@@ -2,7 +2,7 @@
 //  ActivityChart.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 27.10.2024.
+//  Created by Naukanova Nuraiym on 27.10.2024.
 //
 
 import SwiftUI
@@ -70,7 +70,7 @@ struct ActivityChart: View {
                                     Text(LocalizedStringKey(stringLiteral: "Active Energy"))
                                         .font(.caption)
                                         .foregroundColor(.secondary)
-                                    Text("\(Int(daily.calories)) kcal")  // Updated to use calories
+                                    Text(LocalizedStringKey(stringLiteral: "\(Int(daily.calories)) kcal"))
                                         .font(.caption)
                                         .bold()
                                 }

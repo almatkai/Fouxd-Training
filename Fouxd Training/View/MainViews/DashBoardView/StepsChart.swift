@@ -2,7 +2,7 @@
 //  StepsChart.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 27.10.2024.
+//  Created by Naukanova Nuraiym on 27.10.2024.
 //
 
 import SwiftUI
@@ -27,7 +27,7 @@ struct StepsChart: View {
                     Text("Weekly Progress")
                         .font(.subheadline)
                         .foregroundColor(.secondary)
-                    Text("\(totalSteps) steps")
+                    Text(LocalizedStringResource(stringLiteral: "\(totalSteps) steps"))
                         .font(.title3)
                         .bold()
                 }

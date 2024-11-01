@@ -2,7 +2,7 @@
 //  WorkoutHistory.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 25.10.2024.
+//  Created by Naukanova Nuraiym on 25.10.2024.
 //
 
 import Foundation
@@ -19,6 +19,7 @@ struct WorkoutHistory: Identifiable, Codable {
     let isCompleted: Bool
     
     var completionPercentage: Double {
-        Double(exercisesCompleted) / Double(totalExercises) * 100
+        if totalExercises == 0 { return 0 }
+        return Double(exercisesCompleted) / Double(totalExercises) * 100
     }
 }

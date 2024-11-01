@@ -68,12 +68,12 @@ struct PlanCard: View {
         VStack(spacing: 0) {
             // Header
             HStack {
-                Text(plan.weekDay.rawValue)
+                Text(LocalizedStringResource(stringLiteral: plan.weekDay.rawValue))
                     .font(.title3)
                     .fontWeight(.bold)
                     .foregroundColor(.white)
                 Spacer()
-                Text(availability.freeTime == 0 ? "Not set" : formattedTime)
+                Text(LocalizedStringResource(stringLiteral: availability.freeTime == 0 ? "Not set" : formattedTime))
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.white.opacity(0.9))
@@ -118,7 +118,7 @@ struct ExerciseRow: View {
     var body: some View {
         VStack {
             HStack {
-                Text(title)
+                Text(LocalizedStringResource(stringLiteral: title))
                     .foregroundColor(.primary)
                 Spacer()
                 Image(systemName: showDesc ? "chevron.down" : "chevron.right")
@@ -126,7 +126,7 @@ struct ExerciseRow: View {
                     .foregroundColor(.gray)
             }
             if showDesc {
-                Text(description)
+                Text(LocalizedStringResource(stringLiteral: description))
                     .font(.caption)
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.top, 8)

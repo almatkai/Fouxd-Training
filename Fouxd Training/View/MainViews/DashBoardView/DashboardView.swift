@@ -72,6 +72,8 @@ struct DashboardView: View {
     @Namespace private var namespace
     @EnvironmentObject private var historyVM: WorkoutHistoryViewModel
     
+    @State var lang = UserDefaults.standard.value(forKey: "language")
+    
     enum TimeRange {
         case week, month, year
     }
@@ -83,7 +85,7 @@ struct DashboardView: View {
                     LazyVStack(spacing: 16) {
                         if isStepsExpanded {
                             MetricCard(
-                                title: "Steps",
+                                title: LocalizedStringResource(stringLiteral: "Steps"),
                                 value: "\(Int(healthKitManager.steps))",
                                 icon: "figure.walk",
                                 color: .blue,
@@ -94,8 +96,8 @@ struct DashboardView: View {
                             }
                         } else if isActivityExpanded {
                             MetricCard(
-                                title: "Active Energy",
-                                value: "\(Int(healthKitManager.activeEnergy)) kcal",
+                                title: LocalizedStringResource(stringLiteral: "Activeness"),
+                                value: LocalizedStringResource(stringLiteral: "\(Int(healthKitManager.activeEnergy)) kcal"),
                                 icon: "flame.fill",
                                 color: .orange,
                                 isExpanded: $isActivityExpanded,
@@ -106,7 +108,7 @@ struct DashboardView: View {
                         } else {
                             HStack(spacing: 16) {
                                 MetricCard(
-                                    title: "Steps",
+                                    title: LocalizedStringResource(stringLiteral: "Steps"),
                                     value: "\(Int(healthKitManager.steps))",
                                     icon: "figure.walk",
                                     color: .blue,
@@ -117,8 +119,11 @@ struct DashboardView: View {
                                 }
                                 
                                 MetricCard(
-                                    title: "Active Energy",
-                                    value: "\(Int(healthKitManager.activeEnergy)) kcal",
+                                    title: LocalizedStringResource(stringLiteral: "Activeness"),
+                                    value: LocalizedStringResource(stringLiteral: lang as? String == "en" ?
+                                                                   "\(Int(healthKitManager.activeEnergy)) kcal" :
+                                                                    "\(Int(healthKitManager.activeEnergy)) ккал"
+                                                                  ),
                                     icon: "flame.fill",
                                     color: .orange,
                                     isExpanded: $isActivityExpanded,
@@ -149,8 +154,8 @@ struct DashboardView: View {
 }
 
 struct MetricCard<Content: View>: View {
-    let title: String
-    let value: String
+    let title: LocalizedStringResource
+    let value: LocalizedStringResource
     let icon: String
     let color: Color
     @Binding var isExpanded: Bool

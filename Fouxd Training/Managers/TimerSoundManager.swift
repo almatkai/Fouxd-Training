@@ -2,7 +2,7 @@
 //  TimerSoundManager.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 26.10.2024.
+//  Created by Naukanova Nuraiym on 26.10.2024.
 //
 
 import Foundation

@@ -4,12 +4,38 @@
     ":" : {
 
     },
+    "%@" : {
+
+    },
+    "%@ " : {
+
+    },
+    "%@ %@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ %2$@"
+          }
+        }
+      }
+    },
     "%@ kg" : {
       "localizations" : {
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ кг"
+          }
+        }
+      }
+    },
+    "%@%@" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@%2$@"
           }
         }
       }
@@ -28,11 +54,23 @@
       }
     },
     "%lld kcal" : {
+      "extractionState" : "manual",
       "localizations" : {
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld ккал"
+          }
+        }
+      }
+    },
+    "%lld min" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld минут"
           }
         }
       }
@@ -53,16 +91,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%lld жиын"
-          }
-        }
-      }
-    },
-    "%lld steps" : {
-      "localizations" : {
-        "kk" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld қадам"
           }
         }
       }
@@ -106,6 +134,36 @@
         }
       }
     },
+    "🔒" : {
+
+    },
+    "About Us" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "About Us"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Біз туралы"
+          }
+        }
+      }
+    },
+    "active" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "белсенді"
+          }
+        }
+      }
+    },
     "Active" : {
       "localizations" : {
         "kk" : {
@@ -122,6 +180,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Белсенді энергия"
+          }
+        }
+      }
+    },
+    "Activeness" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Белсенділік"
           }
         }
       }
@@ -157,7 +225,24 @@
       }
     },
     "Are you sure you want to log out?" : {
-
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жүйеден шыққыңыз келетініне сенімдісіз бе?"
+          }
+        }
+      }
+    },
+    "Authors" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Авторлар"
+          }
+        }
+      }
     },
     "Calories" : {
       "localizations" : {
@@ -180,7 +265,24 @@
       }
     },
     "Check your nutrition" : {
-
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Тамақтану жоспары"
+          }
+        }
+      }
+    },
+    "Close" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жабу"
+          }
+        }
+      }
     },
     "Completed %lld exercises" : {
       "localizations" : {
@@ -212,12 +314,32 @@
         }
       }
     },
+    "Dark" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қараңғы"
+          }
+        }
+      }
+    },
     "Dashboard" : {
       "localizations" : {
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Басты"
+          }
+        }
+      }
+    },
+    "Data Collection" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Деректерді Жинау"
           }
         }
       }
@@ -238,6 +360,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Ұзақтығы: %@"
+          }
+        }
+      }
+    },
+    "Edit" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Өзгерту"
           }
         }
       }
@@ -312,6 +444,20 @@
         }
       }
     },
+    "Fouxd Training" : {
+
+    },
+    "Friday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жұма"
+          }
+        }
+      }
+    },
     "Gender" : {
       "localizations" : {
         "kk" : {
@@ -355,6 +501,44 @@
         }
       }
     },
+    "ℹ️" : {
+
+    },
+    "Key" : {
+      "extractionState" : "manual"
+    },
+    "language.english" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "English"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Ағылшынша"
+          }
+        }
+      }
+    },
+    "language.kazakh" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Kazakh (partial translation)"
+          }
+        },
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
+            "value" : "Қазақша"
+          }
+        }
+      }
+    },
     "Let's start training!" : {
       "localizations" : {
         "kk" : {
@@ -365,12 +549,23 @@
         }
       }
     },
+    "light" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "жеңіл"
+          }
+        }
+      }
+    },
     "Light" : {
       "localizations" : {
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Жеңіл"
+            "value" : "Жарық"
           }
         }
       }
@@ -397,10 +592,24 @@
       }
     },
     "Log Out" : {
-
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шығу"
+          }
+        }
+      }
     },
     "Log out?" : {
-
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Шығу"
+          }
+        }
+      }
     },
     "Male" : {
       "localizations" : {
@@ -422,12 +631,55 @@
         }
       }
     },
-    "Moderate" : {
+    "moderate" : {
+      "extractionState" : "manual",
       "localizations" : {
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
+            "value" : "орташа"
+          }
+        }
+      }
+    },
+    "Moderate" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "needs_review",
             "value" : "Орташа"
+          }
+        }
+      }
+    },
+    "Monday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Дүйсенбі"
+          }
+        }
+      }
+    },
+    "Naukanova Nuraiym" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Науқанова Нұрайым"
+          }
+        }
+      }
+    },
+    "Not set" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жоспарда жоқ"
           }
         }
       }
@@ -482,6 +734,16 @@
         }
       }
     },
+    "Privacy Policy" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Құпиялылық Саясаты"
+          }
+        }
+      }
+    },
     "Profile" : {
       "localizations" : {
         "kk" : {
@@ -532,6 +794,28 @@
         }
       }
     },
+    "Saturday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сенбі"
+          }
+        }
+      }
+    },
+    "sedentary" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "белсенді емес"
+          }
+        }
+      }
+    },
     "Sedentary" : {
       "localizations" : {
         "kk" : {
@@ -543,7 +827,14 @@
       }
     },
     "See" : {
-
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Көру"
+          }
+        }
+      }
     },
     "Select the days and times you're available for training" : {
       "localizations" : {
@@ -572,6 +863,7 @@
       }
     },
     "Settings" : {
+      "extractionState" : "stale",
       "localizations" : {
         "kk" : {
           "stringUnit" : {
@@ -611,6 +903,27 @@
         }
       }
     },
+    "Sunday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жексенбі"
+          }
+        }
+      }
+    },
+    "System" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Жүйе"
+          }
+        }
+      }
+    },
     "Tap to log out" : {
       "localizations" : {
         "kk" : {
@@ -621,12 +934,64 @@
         }
       }
     },
+    "The app collects data related to your workouts, nutrition, and health metrics to provide personalized recommendations and track progress. We do not share your data with third parties." : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Қолданба жекелендірілген ұсыныстар беру және прогресті бақылау үшін жаттығуларыңызға, тамақтануыңызға және денсаулық көрсеткіштеріңізге қатысты деректерді жинайды. Біз сіздің деректеріңізді үшінші тұлғалармен бөліспейміз."
+          }
+        }
+      }
+    },
+    "This app is designed to provide users with focused and planned fitness at home or gym. It includes a variety of workouts, nutrition plans, and health tracking features." : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бұл қолданба пайдаланушыларға үйде немесе жаттығу залында мақсатты және жоспарланған фитнеспен қамтамасыз етуге арналған. Ол әртүрлі жаттығуларды, тамақтану жоспарларын және денсаулықты бақылау мүмкіндіктерін қамтиды."
+          }
+        }
+      }
+    },
+    "Thursday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Бейсенбі"
+          }
+        }
+      }
+    },
     "Today's Workout" : {
       "localizations" : {
         "kk" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Бүгінгі жаттығу"
+          }
+        }
+      }
+    },
+    "Version 1.0.0" : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1.0.0 нұсқасы"
+          }
+        }
+      }
+    },
+    "Wednesday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сәрсенбі"
           }
         }
       }
@@ -687,6 +1052,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Жаттығу сеансы"
+          }
+        }
+      }
+    },
+    "Your privacy is important to us. This policy outlines the types of information collected by the app, how it is used, and the measures we take to ensure your data is secure." : {
+      "localizations" : {
+        "kk" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Сіздің жеке өміріңіз біз үшін маңызды. Бұл саясатта қолданба жинайтын ақпарат түрлері, оның қалай пайдаланылатыны және деректеріңіздің қауіпсіздігін қамтамасыз ету үшін қолданатын шараларымыз көрсетілген."
           }
         }
       }

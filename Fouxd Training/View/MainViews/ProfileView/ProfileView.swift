@@ -16,19 +16,26 @@ struct ProfileView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var showSettings = false
     @StateObject private var authViewModel = AuthenticationViewModel()
-    @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true
     
+    @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true
+    @StateObject private var languageService = LocalizationService.shared
+    @State private var selectedLanguage: Language
+    @State private var scrollOffset: CGFloat = 0
+    
+    init() {
+        _selectedLanguage = State(initialValue: LocalizationService.shared.language)
+    }
     @State var logOut = false
     var body: some View {
         NavigationStack {
             ScrollView {
-                GeometryReader { geometry in
+//                GeometryReader { geometry in
                     ZStack {
-                        let scrollOffset = geometry.frame(in: .global).minY
-                        Image("background_circles")
-                            .frame(width: width())
-                            .offset(y: -height() * 0.3 + scrollOffset * 0.4)
-                            .opacity(0.4)
+//                        let scrollOffset = geometry.frame(in: .local).minY
+//                        Image("background_circles")
+//                            .frame(width: width())
+//                            .offset(y: -height() * 0.3 + scrollOffset * 0.4)
+//                            .opacity(0.4)
                         VStack(spacing: 20) {
                             ZStack {
                                 VStack {
@@ -42,7 +49,7 @@ struct ProfileView: View {
                                                 .scaledToFit()
                                                 .frame(width: 18)
                                         }
-                                        .padding()
+                                        .padding(24)
                                     }
                                     Spacer()
                                 }
@@ -76,7 +83,7 @@ struct ProfileView: View {
                                     showSettings.toggle()
                                     vibrate()
                                 }) {
-                                    Label("Settings", systemImage: "pencil")
+                                    Label("Edit", systemImage: "pencil")
                                         .frame(maxWidth: .infinity)
                                         .padding()
                                         .background(
@@ -92,29 +99,21 @@ struct ProfileView: View {
                             }
                             .padding(.horizontal)
                             
-                            // Content Sections
-//                            VStack(spacing: 15) {
-//                                SectionCard(title: "Recent Activity", icon: "clock.fill") {
-//                                    VStack(alignment: .leading, spacing: 12) {
-//                                        ActivityRow(icon: "heart.fill", text: "Liked 'Post Title'", time: "2h ago")
-//                                        ActivityRow(icon: "bookmark.fill", text: "Saved 'Another Post'", time: "5h ago")
-//                                        ActivityRow(icon: "message.fill", text: "Commented on 'Post'", time: "1d ago")
-//                                    }
-//                                }
-//                                
-//                                SectionCard(title: "Saved Items", icon: "bookmark.fill") {
-//                                    VStack(alignment: .leading, spacing: 12) {
-//                                        SavedItemRow(title: "Saved Post 1", date: "Yesterday")
-//                                        SavedItemRow(title: "Saved Post 2", date: "2 days ago")
-//                                        SavedItemRow(title: "Saved Post 3", date: "1 week ago")
-//                                    }
-//                                }
-//                            }.padding(.horizontal)
+                            VStack(alignment: .leading, spacing: 12) {
+                                LanguageChangerView()
+                                ThemingChangerView()
+                                AboutUsView()
+                            }
+                            .padding()
+                            .background(Color(.systemBackground))
+                            .cornerRadius(22)
+                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                            .padding(.horizontal)
                             
                             VStack {}.padding()
                         }
                     }
-                }
+//                }
             }
             .confirmationDialog(
                 "Log out?",
@@ -194,40 +193,8 @@ struct ProfileView: View {
         }
         .padding(.top, 20)
     }
-    
-    private func signInAction() async {
-        if userSessionVM.userSession == nil {
-            await authViewModel.signInWithGoogle(completion: {_ in})
-            userSessionVM.refreshUser()
-
-            guard let userSession = userSessionVM.userSession else { return }
-
-            let result = await withCheckedContinuation { continuation in
-                FBMUserData.shared.fetchUserData(uid: userSession.uid) { res in
-                    continuation.resume(returning: res)
-                }
-            }
-
-            switch result {
-            case .success(let userData):
-                userDataVM.userData = userData
-            case .failure(_):
-                await createAccount()
-            }
-        } else {
-            authViewModel.logOut()
-        }
-        userSessionVM.refreshUser()
-    }
-
-    private func createAccount() async {
-        userDataVM.createUserData(userSession: userSessionVM.userSession)
-        planVM.createPlans(userData: userDataVM.userData)
-        await Task {
-            await planVM.savePlans(userSession: userSessionVM.userSession)
-        }.value
-    }
 }
+
 
 struct StatsView: View {
     let weight: String
@@ -236,16 +203,16 @@ struct StatsView: View {
     
     var body: some View {
         HStack(spacing: 40) {
-            StatItem(value: weight, title: "Weight")
-            StatItem(value: height, title: "Height")
-            StatItem(value: activityLevel, title: "Activity Level")
+            StatItem(value: LocalizedStringResource(stringLiteral: weight), title: LocalizedStringResource(stringLiteral: "Weight"))
+            StatItem(value: LocalizedStringResource(stringLiteral: height), title: LocalizedStringResource(stringLiteral: "Height"))
+            StatItem(value: LocalizedStringResource(stringLiteral: activityLevel), title: LocalizedStringResource(stringLiteral: "Activity Level"))
         }
     }
 }
 
 struct StatItem: View {
-    let value: String
-    let title: String
+    let value: LocalizedStringResource
+    let title: LocalizedStringResource
     
     var body: some View {
         VStack {
@@ -277,7 +244,7 @@ struct EditButton: View {
     }
 }
 
-struct ActivityRow: View {
+struct Row: View {
     let icon: String
     let text: String
     let time: String
@@ -290,22 +257,6 @@ struct ActivityRow: View {
                 .font(.subheadline)
             Spacer()
             Text(time)
-                .font(.caption)
-                .foregroundColor(.gray)
-        }
-    }
-}
-
-struct SavedItemRow: View {
-    let title: String
-    let date: String
-    
-    var body: some View {
-        HStack {
-            Text(title)
-                .font(.subheadline)
-            Spacer()
-            Text(date)
                 .font(.caption)
                 .foregroundColor(.gray)
         }

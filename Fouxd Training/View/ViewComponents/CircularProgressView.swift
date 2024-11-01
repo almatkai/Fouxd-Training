@@ -2,7 +2,7 @@
 //  CircularProgressView.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 25.10.2024.
+//  Created by Naukanova Nuraiym on 25.10.2024.
 //
 
 import SwiftUI

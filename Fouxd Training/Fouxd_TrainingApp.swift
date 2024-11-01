@@ -26,11 +26,31 @@ struct Fouxd_TrainingApp: App {
     @StateObject private var userSessionViewModel = UserSessionViewModel()
     @StateObject private var historyVM: WorkoutHistoryViewModel
     
+    @ObservedObject private var themeService = ThemeService.shared
+    
     init() {
         let planViewModel = PlanViewModel()
         _historyVM = StateObject(wrappedValue: WorkoutHistoryViewModel(plansPublisher: planViewModel.plansPublisher))
         _planViewModel = StateObject(wrappedValue: planViewModel)
     }
+    
+    @AppStorage("language")
+    private var language: Language = {
+        // First, check for previously stored language preference
+        if let savedLanguageRawValue = UserDefaults.standard.string(forKey: "language"),
+           let savedLanguage = Language(rawValue: savedLanguageRawValue) {
+            return savedLanguage
+        }
+        
+        // If no preference or invalid saved value, use system settings as a fallback
+        let preferredLanguages = Locale.preferredLanguages
+        
+        // Safely map and filter preferred languages
+        let matchedLanguage = preferredLanguages.compactMap { Language(rawValue: $0) }.first
+        
+        // Return matched language or default to English
+        return matchedLanguage ?? .en
+    }()
     
     var body: some Scene {
         WindowGroup {
@@ -39,7 +59,8 @@ struct Fouxd_TrainingApp: App {
                 .environmentObject(userDataViewModel)
                 .environmentObject(userSessionViewModel)
                 .environmentObject(historyVM)
-//                .environment(\.locale, .init(identifier: "kk"))
+                .environment(\.locale, .init(identifier: language.rawValue))
+                .preferredColorScheme(themeService.theme.colorScheme)
         }
     }
 }

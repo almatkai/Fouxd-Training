@@ -2,7 +2,7 @@
 //  WorkoutCalendarView.swift
 //  Fouxd Training
 //
-//  Created by Almat Kairatov on 27.10.2024.
+//  Created by Naukanova Nuraiym on 27.10.2024.
 //
 
 import SwiftUI
