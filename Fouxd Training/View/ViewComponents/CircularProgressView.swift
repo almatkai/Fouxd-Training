@@ -37,12 +37,9 @@ struct CircularTimerView: View {
             // Play sound when countdown reaches 4 or less, but only once per second
             if newValue == 3 || newValue == 2 || newValue == 1 {
                 TimerSoundManager.shared.playCountdownSound(forSecond: newValue, whichSound: "countdown_beep_secondary")
-                print("Played sound for \(newValue)")
             } else if newValue == 0 {
                 TimerSoundManager.shared.playCountdownSound(forSecond: newValue, whichSound: "countdown_beep_primary")
-                print("Played sound for \(newValue)")
             }
-            print(newValue)
         }
         // Reset lastPlayedSecond when the view appears
         .onAppear {

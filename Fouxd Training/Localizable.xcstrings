@@ -30,6 +30,9 @@
         }
       }
     },
+    "%@ theme" : {
+
+    },
     "%@%@" : {
       "localizations" : {
         "en" : {
@@ -214,6 +217,9 @@
         }
       }
     },
+    "Age: %lld years" : {
+
+    },
     "Are you sure you want to end this workout? Your progress will be saved." : {
       "localizations" : {
         "kk" : {
@@ -374,6 +380,9 @@
         }
       }
     },
+    "Effort: %@" : {
+
+    },
     "End" : {
       "localizations" : {
         "kk" : {
@@ -468,6 +477,9 @@
         }
       }
     },
+    "Gender: %@" : {
+
+    },
     "Get Ready!" : {
       "localizations" : {
         "kk" : {
@@ -487,6 +499,9 @@
           }
         }
       }
+    },
+    "Height: %lld cm" : {
+
     },
     "Hello, World!" : {
 
@@ -804,6 +819,9 @@
           }
         }
       }
+    },
+    "Save" : {
+
     },
     "sedentary" : {
       "extractionState" : "manual",

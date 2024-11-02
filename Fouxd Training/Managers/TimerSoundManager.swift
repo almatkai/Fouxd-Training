@@ -36,7 +36,6 @@ class TimerSoundManager {
             let newPlayer = try AVAudioPlayer(contentsOf: soundURL)
             newPlayer.prepareToPlay()
             newPlayer.play()
-            // Keep a reference to prevent deallocation before sound completes
             player = newPlayer
         } catch {
             print("Failed to play sound: \(error)")

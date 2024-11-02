@@ -43,7 +43,6 @@ class HealthKitManager: ObservableObject {
         
         healthStore.requestAuthorization(toShare: nil, read: typesToRead) { success, error in
             if success {
-                print("HealthKit authorization granted")
                 DispatchQueue.main.async {
                     self.fetchHealthData()
                 }
@@ -81,7 +80,6 @@ class HealthKitManager: ObservableObject {
             options: .cumulativeSum
         ) { [weak self] _, result, error in
             guard let result = result, let sum = result.sumQuantity() else {
-//                print("Failed to fetch steps: \(error?.localizedDescription ?? "")")
                 return
             }
             
@@ -110,7 +108,6 @@ class HealthKitManager: ObservableObject {
             options: .cumulativeSum
         ) { [weak self] _, result, error in
             guard let result = result, let sum = result.sumQuantity() else {
-//                print("Failed to fetch active energy: \(error?.localizedDescription ?? "")")
                 return
             }
             
@@ -166,7 +163,6 @@ class HealthKitManager: ObservableObject {
             options: .discreteAverage
         ) { [weak self] _, result, error in
             guard let result = result, let average = result.averageQuantity() else {
-//                print("Failed to fetch heart rate: \(error?.localizedDescription ?? "")")
                 return
             }
             
@@ -195,7 +191,6 @@ class HealthKitManager: ObservableObject {
             options: .discreteAverage
         ) { [weak self] _, result, error in
             guard let result = result, let average = result.averageQuantity() else {
-//                print("Failed to fetch VO2 Max: \(error?.localizedDescription ?? "")")
                 return
             }
             
@@ -224,7 +219,6 @@ class HealthKitManager: ObservableObject {
             options: .cumulativeSum
         ) { [weak self] _, result, error in
             guard let result = result, let sum = result.sumQuantity() else {
-//                print("Failed to fetch workout minutes: \(error?.localizedDescription ?? "")")
                 return
             }
             
@@ -253,7 +247,6 @@ class HealthKitManager: ObservableObject {
             options: .cumulativeSum
         ) { [weak self] _, result, error in
             guard let result = result, let sum = result.sumQuantity() else {
-//                print("Failed to fetch water intake: \(error?.localizedDescription ?? "")")
                 return
             }
             
@@ -325,7 +318,6 @@ class HealthKitManager: ObservableObject {
         
         query.initialResultsHandler = { query, results, error in
             guard let results = results else {
-//                print("Failed to fetch weekly data: \(error?.localizedDescription ?? "")")
                 return
             }
             

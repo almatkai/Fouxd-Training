@@ -99,7 +99,7 @@ struct SecondLaunchView: View {
         case .gender:
             return "Gender: \(userDataVM.userData.gender == .male ? "Male" : userDataVM.userData.gender == .female ? "Female" : "Other")"
         case .activityLevel:
-            return "Activity Level: \(userDataVM.userData.activityLevel)"
+            return "Effort: \(userDataVM.userData.activityLevel)"
         }
     }
     

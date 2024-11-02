@@ -10,18 +10,18 @@ import FirebaseAuth
 
 
 struct ProfileView: View {
-    @EnvironmentObject var userSessionVM: UserSessionViewModel
-    @EnvironmentObject var userDataVM: UserDataViewModel
-    @EnvironmentObject var planVM: PlanViewModel
+    @EnvironmentObject private var userSessionVM: UserSessionViewModel
+    @EnvironmentObject private var userDataVM: UserDataViewModel
+    @EnvironmentObject private var planVM: PlanViewModel
     @Environment(\.dismiss) private var dismiss
     @State private var showSettings = false
     @StateObject private var authViewModel = AuthenticationViewModel()
     
-    @AppStorage("isFirstLaunch") var isFirstLaunch: Bool = true
+    @AppStorage("isFirstLaunch") private var isFirstLaunch: Bool = true
     @StateObject private var languageService = LocalizationService.shared
     @State private var selectedLanguage: Language
-    @State private var scrollOffset: CGFloat = 0
-    
+    @State var editMode = false
+    @State var pickerType: PickerType = .weight
     init() {
         _selectedLanguage = State(initialValue: LocalizationService.shared.language)
     }
@@ -29,92 +29,88 @@ struct ProfileView: View {
     var body: some View {
         NavigationStack {
             ScrollView {
-//                GeometryReader { geometry in
-                    ZStack {
-//                        let scrollOffset = geometry.frame(in: .local).minY
-//                        Image("background_circles")
-//                            .frame(width: width())
-//                            .offset(y: -height() * 0.3 + scrollOffset * 0.4)
-//                            .opacity(0.4)
-                        VStack(spacing: 20) {
-                            ZStack {
-                                VStack {
-                                    HStack {
-                                        Spacer()
-                                        Button(action: {
-                                            logOut = true
-                                        }){
-                                            Image(systemName: "door.left.hand.open")
-                                                .resizable()
-                                                .scaledToFit()
-                                                .frame(width: 18)
-                                        }
-                                        .padding(24)
-                                    }
+                ZStack {
+                    VStack(spacing: 20) {
+                        ZStack {
+                            VStack {
+                                HStack {
                                     Spacer()
+                                    Button(action: {
+                                        logOut = true
+                                    }){
+                                        Image(systemName: "door.left.hand.open")
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 18)
+                                    }
+                                    .padding(24)
                                 }
-                                if let googleUser = userSessionVM.userSession {
-                                    // Google User Profile
-                                    googleUserProfile(user: googleUser)
-                                } else {
-                                    // Local User Profile
-                                    localUserProfile
-                                }
+                                Spacer()
                             }
-                            
-                            // Action Buttons
-                            HStack(spacing: 20) {
-                                NavigationLink(destination: EditPlanView()) {
-                                    Label("Plan", systemImage: "calendar")
-                                        .frame(maxWidth: .infinity)
-                                        .foregroundColor(.white)
-                                        .padding()
-                                        .background {
-                                            LinearGradient(
-                                                gradient: Gradient(colors: [Color(.cGradientBlue1), Color(.cGradientBlue2)]),
-                                                startPoint: .top,
-                                                endPoint: .bottom
-                                            )
-                                        }
-                                        .cornerRadius(20)
-                                }
-                                
-                                Button(action: {
-                                    showSettings.toggle()
-                                    vibrate()
-                                }) {
-                                    Label("Edit", systemImage: "pencil")
-                                        .frame(maxWidth: .infinity)
-                                        .padding()
-                                        .background(
-                                            LinearGradient(
-                                                gradient: Gradient(colors: [Color(.cGradientPurple1), Color(.cGradientPurple2)]),
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            )
-                                            .opacity(0.8)
-                                        )
-                                        .cornerRadius(20)
-                                }
+                            if let googleUser = userSessionVM.userSession {
+                                googleUserProfile(user: googleUser)
+                            } else {
+                                localUserProfile
                             }
-                            .padding(.horizontal)
-                            
-                            VStack(alignment: .leading, spacing: 12) {
-                                LanguageChangerView()
-                                ThemingChangerView()
-                                AboutUsView()
-                                PrivacyPolicyView()
-                            }
-                            .padding()
-                            .background(Color(.systemBackground))
-                            .cornerRadius(22)
-                            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-                            .padding(.horizontal)
-                            
-                            VStack {}.padding()
                         }
+                        
+                        // Action Buttons
+                        HStack(spacing: 20) {
+                            NavigationLink(destination: EditPlanView()) {
+                                Label("Plan", systemImage: "calendar")
+                                    .frame(maxWidth: .infinity)
+                                    .foregroundColor(.white)
+                                    .padding()
+                                    .background {
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [Color(.cGradientBlue1), Color(.cGradientBlue2)]),
+                                            startPoint: .top,
+                                            endPoint: .bottom
+                                        )
+                                    }
+                                    .cornerRadius(20)
+                            }
+                            
+                            Button(action: {
+                                withAnimation(.easeInOut(duration: 0.3)){
+                                    editMode.toggle()
+                                }
+                                if editMode {
+                                    userDataVM.updateUserData(userSession: userSessionVM.userSession)
+                                }
+                            }) {
+                                Label(editMode ? "Save" : "Edit", systemImage: "pencil")
+                                    .frame(maxWidth: .infinity)
+                                    .padding()
+                                    .background(
+                                        LinearGradient(
+                                            gradient: Gradient(colors: [Color(.cGradientPurple1), Color(.cGradientPurple2)]),
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        )
+                                        .opacity(0.8)
+                                    )
+                                    .cornerRadius(20)
+                            }
+                        }
+                        .padding(.horizontal)
+                        
+                        
+                        if editMode {
+                            userMetricsEdit
+                                .transition(
+                                    .asymmetric(
+                                        insertion: .move(edge: .bottom).combined(with: .opacity),
+                                        removal: .move(edge: .bottom).combined(with: .opacity)
+                                    )
+                                )
+                        }
+                        
+                        settings
+                        
+                        VStack {}.padding()
                     }
-//                }
+                }
             }
             .confirmationDialog(
                 "Log out?",
@@ -136,12 +132,6 @@ struct ProfileView: View {
             }
         }
         .tint(Color("cTintColor"))
-    }
-    
-    private func enterAccount() async {
-        await userDataVM.checkAndCreateData(userId: userSessionVM.userSession?.uid ?? "")
-        await planVM.checkAndCreatePlans(userData: userDataVM.userData, userId: userSessionVM.userSession?.uid ?? "")
-        userSessionVM.refreshUser()
     }
     
     // Google User Profile View
@@ -171,11 +161,13 @@ struct ProfileView: View {
             StatsView(
                 weight: String(userDataVM.userData.weight),
                 height: String(userDataVM.userData.height),
-                activityLevel: userDataVM.userData.activityLevel.rawValue)
+                activityLevel: userDataVM.userData.activityLevel.rawValue,
+                editMode: $editMode)
         }
         .padding(.top, 20)
     }
     
+    @ViewBuilder
     private var localUserProfile: some View {
         VStack(spacing: 25) {
             Image(systemName: "person.circle.fill")
@@ -189,10 +181,139 @@ struct ProfileView: View {
             StatsView(
                 weight: "\(userDataVM.userData.weight)",
                 height: "\(userDataVM.userData.height)",
-                activityLevel: "\(userDataVM.userData.activityLevel)"
+                activityLevel: "\(userDataVM.userData.activityLevel)",
+                editMode: $editMode
             )
         }
         .padding(.top, 20)
+    }
+    
+    @ViewBuilder
+    private var settings: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            LanguageChangerView()
+            Divider()
+            ThemingChangerView()
+            Divider()
+            AboutUsView()
+            Divider()
+            PrivacyPolicyView()
+        }
+        .padding()
+        .background(Color(.cwhiteAndDarkGray))
+        .cornerRadius(22)
+        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+        .padding(.horizontal)
+    }
+    
+    @ViewBuilder
+    private var userMetricsEdit: some View {
+        HStack {
+            VStack {
+                ForEach(PickerType.allCases, id: \.self) { type in
+                    buttonWithBackground(for: type)
+                }
+                Spacer()
+            }
+            .padding()
+            .background(Color(.cwhiteAndDarkGray))
+            .cornerRadius(22)
+            .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+            .padding(.horizontal)
+            .frame(width: width() * 0.6)
+            
+            VStack {
+                pickerView()
+            }
+            
+        }
+    }
+    
+    @Namespace private var animation
+    private func buttonWithBackground(for type: PickerType) -> some View {
+        ZStack(alignment: .leading) {
+            if pickerType == type {
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(Color.blue.opacity(0.2))
+                    .matchedGeometryEffect(id: "background", in: animation)
+            }
+            button(for: type)
+                .padding(.vertical, 8)
+                .padding(.horizontal, 8)
+        }
+        .fixedSize(horizontal: false, vertical: true)
+        .animation(.easeInOut, value: pickerType)
+    }
+    
+    private func button(for type: PickerType, text: String? = nil) -> some View {
+        Button(action: {
+            withAnimation {
+                pickerType = type
+            }
+        }) {
+            Text(buttonText(for: type))
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .font(.body)
+                .fontWeight(pickerType == type ? .heavy : .medium)
+        }
+        .foregroundColor(pickerType == type ? .blue : .secondary)
+    }
+    
+    private func buttonText(for type: PickerType) -> LocalizedStringResource {
+        switch type {
+        case .weight:
+            return LocalizedStringResource(stringLiteral: String(format: "Weight: %.1f kg", userDataVM.userData.weight))
+        case .height:
+            return "Height: \(Int(userDataVM.userData.height)) cm"
+        case .age:
+            return "Age: \(userDataVM.userData.age) years"
+        case .gender:
+            return "Gender: \(userDataVM.userData.gender == .male ? "Male" : userDataVM.userData.gender == .female ? "Female" : "Other")"
+        case .activityLevel:
+            return "Effort: \(userDataVM.userData.activityLevel.rawValue)"
+        }
+    }
+    
+    private func pickerView() -> some View {
+        Group {
+            switch pickerType {
+            case .weight:
+                Picker("Weight", selection: $userDataVM.userData.weight) {
+                    ForEach(Array(stride(from: 10, to: 300, by: 0.5)), id: \.self) { weight in
+                        Text("\(String(format: weight.truncatingRemainder(dividingBy: 1) == 0 ? "%.0f" : "%.1f", weight)) kg")
+                            .tag(Double(weight))
+                            .font(.callout)
+                    }
+                }
+            case .height:
+                Picker("Height", selection: $userDataVM.userData.height) {
+                    ForEach(100...250, id: \.self) { height in
+                        Text("\(height) cm").tag(Double(height)).font(.callout)
+                    }
+                }
+            case .age:
+                Picker("Age", selection: $userDataVM.userData.age) {
+                    ForEach(1...100, id: \.self) { age in
+                        Text("\(age) years").tag(age).font(.callout)
+                    }
+                }
+            case .gender:
+                Picker("Gender", selection: $userDataVM.userData.gender) {
+                    Text("Male").tag(Gender.male).font(.callout)
+                    Text("Female").tag(Gender.female).font(.callout)
+                    Text("Other").tag(Gender.other).font(.callout)
+                }
+            case .activityLevel:
+                Picker("Activity Level", selection: $userDataVM.userData.activityLevel) {
+                    Text("Sedentary").tag(ActivityLevel.sedentary).font(.callout)
+                    Text("Light").tag(ActivityLevel.light).font(.callout)
+                    Text("Moderate").tag(ActivityLevel.moderate).font(.callout)
+                    Text("Active").tag(ActivityLevel.active).font(.callout)
+                }
+            }
+        }
+        .pickerStyle(WheelPickerStyle())
+        .padding()
     }
 }
 
@@ -201,12 +322,15 @@ struct StatsView: View {
     let weight: String
     let height: String
     let activityLevel: String
+    @Binding var editMode: Bool
     
     var body: some View {
-        HStack(spacing: 40) {
-            StatItem(value: LocalizedStringResource(stringLiteral: weight), title: LocalizedStringResource(stringLiteral: "Weight"))
-            StatItem(value: LocalizedStringResource(stringLiteral: height), title: LocalizedStringResource(stringLiteral: "Height"))
-            StatItem(value: LocalizedStringResource(stringLiteral: activityLevel), title: LocalizedStringResource(stringLiteral: "Activity Level"))
+        if !editMode {
+            HStack(spacing: 40) {
+                StatItem(value: LocalizedStringResource(stringLiteral: weight), title: LocalizedStringResource(stringLiteral: "Weight"))
+                StatItem(value: LocalizedStringResource(stringLiteral: height), title: LocalizedStringResource(stringLiteral: "Height"))
+                StatItem(value: LocalizedStringResource(stringLiteral: activityLevel), title: LocalizedStringResource(stringLiteral: "Activity Level"))
+            }
         }
     }
 }

@@ -27,7 +27,7 @@ struct ThemingChangerView: View {
             HStack {
                 Text("\(theme.themeIcon) ")
                     .font(.system(size: 24))
-                Text("\(theme.representableForm)")
+                Text("\(theme.representableForm) theme")
                     .font(.system(size: 18))
                     .foregroundColor(Color("cblack"))
                 Spacer()

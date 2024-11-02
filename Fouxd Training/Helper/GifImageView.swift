@@ -17,7 +17,6 @@ struct GifImageView: UIViewRepresentable {
 
     func makeUIView(context: Context) -> WKWebView {
         let webview = WKWebView()
-        print(name)
 
         if let url = Bundle.main.url(forResource: name, withExtension: "gif"),
            let data = try? Data(contentsOf: url) {

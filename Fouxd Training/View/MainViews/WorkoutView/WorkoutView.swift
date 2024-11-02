@@ -20,9 +20,6 @@ struct WorkoutView: View {
     var todaysExercises: [ExerciseSession] {
         let today = Calendar.current.component(.weekday, from: Date()) - 2
         let weekDay = WeekDay.allCases[today]
-        
-        print(today)
-        print(weekDay.rawValue)
         return planVM.plans.first(where: { $0.weekDay == weekDay })?.exercises ?? []
     }
     
@@ -109,11 +106,6 @@ struct WorkoutView: View {
                 Button(action: {
                     showingWorkoutSession = true
                     vibrate()
-                    
-                    print("Exercise",todaysExercises.count)
-                    for exercise in todaysExercises {
-                        print(exercise.exerciseWrapper.exercise.title)
-                    }
                 }) {
                     Text("Start")
                         .font(.headline)

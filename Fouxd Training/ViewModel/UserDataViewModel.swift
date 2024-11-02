@@ -44,6 +44,14 @@ class UserDataViewModel: ObservableObject {
             UDUserData.shared.saveUserDataLocally(data: userData)
         }
     }
+    
+    func updateUserData(userSession: User?) {
+        if let userSession = userSession {
+            FBMUserData.shared.createUserData(uid: userSession.uid, data: userData)
+        } else {
+            UDUserData.shared.saveUserDataLocally(data: userData)
+        }
+    }
 
     func fetchUserData(userSession: User?) {
         if let userSession = userSession {
@@ -51,8 +59,6 @@ class UserDataViewModel: ObservableObject {
                 switch result {
                 case .success(let data):
                     self.userData = data
-                    print(self.userData.height)
-                    print(self.userData.weight)
                 case .failure(let error):
                     print("Error fetching user data: \(error)")
                 }
