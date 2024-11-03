@@ -18,7 +18,8 @@ struct WorkoutView: View {
     @State private var showingWorkoutSession = false
     
     var todaysExercises: [ExerciseSession] {
-        let today = Calendar.current.component(.weekday, from: Date()) - 2
+        var today = Calendar.current.component(.weekday, from: Date()) - 2
+        today = today < 0 ? 6 : today
         let weekDay = WeekDay.allCases[today]
         return planVM.plans.first(where: { $0.weekDay == weekDay })?.exercises ?? []
     }
