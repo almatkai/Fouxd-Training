@@ -169,14 +169,14 @@ struct MetricCard<Content: View>: View {
                     Text(title)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
-                        .matchedGeometryEffect(id: "title-\(title)", in: namespace)
-                        .transition(.scale.combined(with: .opacity))
+//                        .matchedGeometryEffect(id: "title-\(title)", in: namespace)
+//                        .transition(.scale.combined(with: .opacity))
                     
                     Text(value)
                         .font(.title2)
                         .bold()
-                        .matchedGeometryEffect(id: "value-\(title)", in: namespace)
-                        .transition(.scale.combined(with: .opacity))
+//                        .matchedGeometryEffect(id: "value-\(title)", in: namespace)
+//                        .transition(.scale.combined(with: .opacity))
                 }
                 
                 Spacer()
@@ -184,16 +184,16 @@ struct MetricCard<Content: View>: View {
                 Image(systemName: icon)
                     .font(.title2)
                     .foregroundColor(color)
-                    .matchedGeometryEffect(id: "icon-\(title)", in: namespace)
-                    .transition(.scale.combined(with: .opacity))
+//                    .matchedGeometryEffect(id: "icon-\(title)", in: namespace)
+//                    .transition(.scale.combined(with: .opacity))
             }
             
             if isExpanded {
                 content()
-                    .transition(.asymmetric(
-                        insertion: .scale.combined(with: .opacity),
-                        removal: .scale.combined(with: .opacity)
-                    ))
+//                    .transition(.asymmetric(
+//                        insertion: .scale.combined(with: .opacity),
+//                        removal: .scale.combined(with: .opacity)
+//                    ))
             }
             
             Button(action: {
@@ -203,7 +203,7 @@ struct MetricCard<Content: View>: View {
             }) {
                 Image(systemName: "chevron.down")
                     .foregroundColor(.secondary)
-                    .matchedGeometryEffect(id: "chevron-\(title)", in: namespace)
+//                    .matchedGeometryEffect(id: "chevron-\(title)", in: namespace)
                     .rotationEffect(.degrees(isExpanded ? 180 : 0))
             }
         }
@@ -222,7 +222,7 @@ struct MetricCard<Content: View>: View {
                         .fill(Color(.cpink).opacity(0.6))
                 }
             }
-                .matchedGeometryEffect(id: "background-\(title)", in: namespace)
+//                .matchedGeometryEffect(id: "background-\(title)", in: namespace)
         )
         .scaleEffect(isExpanded ? 1 : 0.95)
     }

@@ -139,15 +139,6 @@ struct WelcomeView: View {
                                     }
                                 }
                             }
-                            
-//                            await MainActor.run {
-//                                print("Final UI update")
-//                                withAnimation {
-//                                    isFirstLaunch = false
-//                                    pageCounter += 1
-//                                }
-//                            }
-                            
                         case .failure(let error):
                             print("Google sign-in failed with error: \(error)")
                             print("Error description: \(error.localizedDescription)")

@@ -7,7 +7,6 @@
 
 import Foundation
 import HealthKit
-import WidgetKit
 
 // HealthKit Manager with comprehensive metrics
 class HealthKitManager: ObservableObject {
